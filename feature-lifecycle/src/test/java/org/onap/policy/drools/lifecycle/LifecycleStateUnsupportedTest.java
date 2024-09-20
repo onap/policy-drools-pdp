@@ -24,12 +24,15 @@ package org.onap.policy.drools.lifecycle;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
 /**
  * Lifecycle State Unsupported Test.
@@ -52,7 +55,7 @@ public abstract class LifecycleStateUnsupportedTest {
         this.state = state;
     }
 
-    public abstract LifecycleState create(LifecycleFsm fsm);
+    public abstract void create(LifecycleFsm fsm);
 
     @Test
     public void constructor() {
@@ -107,6 +110,13 @@ public abstract class LifecycleStateUnsupportedTest {
     public void changeState() {
         LifecycleStateActive active = new LifecycleStateActive(new LifecycleFsm());
         assertThatThrownBy(() -> state.transitionToState(active))
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    public void updatePolicies() {
+        var list = new ArrayList<ToscaPolicy>();
+        assertThatThrownBy(() -> state.updatePolicies(list))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 }

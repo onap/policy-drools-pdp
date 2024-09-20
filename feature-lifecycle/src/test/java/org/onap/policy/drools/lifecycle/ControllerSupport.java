@@ -35,12 +35,16 @@ import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller Test Support.
  */
 @Getter
 public class ControllerSupport {
+
+    private static final Logger logger = LoggerFactory.getLogger(ControllerSupport.class);
 
     protected static final String JUNIT_KMODULE_DRL_PATH = "src/test/resources/lifecycle.drl";
     protected static final String JUNIT_KMODULE_POM_PATH = "src/test/resources/lifecycle.pom";
@@ -62,20 +66,19 @@ public class ControllerSupport {
     /**
      * Create controller.
      */
-    public PolicyController createController() throws IOException {
+    public void createController() throws IOException {
         try {
             PolicyController controller = getController();
             controller.getDrools().delete(ToscaPolicy.class);
-            return controller;
-        } catch (IllegalArgumentException ignored) {  // NOSONAR
-            ;   // checkstyle
+        } catch (IllegalArgumentException e) {
+            logger.debug("error when creating controller", e);
         }
 
         ReleaseId coordinates = installArtifact();
 
         Properties controllerProps = getControllerProps(coordinates);
 
-        return PolicyControllerConstants.getFactory().build(name, controllerProps);
+        PolicyControllerConstants.getFactory().build(name, controllerProps);
     }
 
     private Properties getControllerProps(ReleaseId coordinates) {
@@ -140,7 +143,7 @@ public class ControllerSupport {
      * Change final marker in static field.
      */
     public static <T> Field unsetFinalStaticAccess(Class<T> clazz, String fieldName)
-            throws NoSuchFieldException {
+        throws NoSuchFieldException {
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
 

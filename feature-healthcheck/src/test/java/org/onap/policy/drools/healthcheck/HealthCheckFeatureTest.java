@@ -23,6 +23,7 @@ package org.onap.policy.drools.healthcheck;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -115,56 +116,29 @@ public class HealthCheckFeatureTest {
         var reports = healthcheck(manager);
         serverChecks(reports);
         checkReports(reports, List.of("STUCK"),
-                HttpStatus.OK_200, HttpStatus.getMessage(200));
+            HttpStatus.OK_200, HttpStatus.getMessage(200));
         checkReports(reports, List.of("echo"), 1, "[echo:{java.lang.String=1}]");
 
         /* mock controller and clients stuck */
 
         RestMockHealthCheck.stuck = true;   // make the server named STUCK unresponsive
         doAnswer(AdditionalAnswers
-                .answersWithDelay((manager.getTimeoutSeconds() + 2) * 1000L,
-                        invocationOnMock -> new HashMap<String, Integer>()))
-                .when(manager).getFactTypes(any(), any());
+            .answersWithDelay((manager.getTimeoutSeconds() + 2) * 1000L,
+                invocationOnMock -> new HashMap<String, Integer>()))
+            .when(manager).getFactTypes(any(), any());
 
         reports = healthcheck(manager);
         RestMockHealthCheck.stuck = false;  // unstuck the server named STUCK
 
         serverChecks(reports);
         checkReports(reports, List.of("STUCK"),
-                HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE);
+            HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE);
 
-        assertTrue(RestMockHealthCheck.WAIT * 1000 > HealthCheckManagerTest.select(reports, "STUCK",
-                        HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE)
-                .get(0).getElapsedTime());
+        assertTrue(RestMockHealthCheck.wait * 1000 > HealthCheckManagerTest.select(reports, "STUCK",
+                HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE)
+            .get(0).getElapsedTime());
 
         feature.afterShutdown(PolicyEngineConstants.getManager());
-    }
-
-    private void checkReports(Reports reports, List<String> reportNames, int code, String message) {
-        reportNames
-                .forEach(name -> assertEquals(1,
-                        HealthCheckManagerTest.select(reports, name, code, message).size()));
-    }
-
-    private Reports healthcheck(HealthCheck manager) {
-        var reports = manager.healthCheck();
-        logger.info("{}", reports);
-        return reports;
-    }
-
-    private void checkOpen(int port) throws InterruptedException {
-        if (!NetworkUtil.isTcpPortOpen("localhost", port, 5, 10000L)) {
-            throw new IllegalStateException("cannot connect to port " + port);
-        }
-    }
-
-    private void serverChecks(Reports reports) {
-        checkReports(reports, List.of("HEALTHCHECK", "LIVENESS"),
-                HttpStatus.OK_200, HttpStatus.getMessage(200));
-        checkReports(reports, List.of("UNAUTH"),
-                HttpStatus.UNAUTHORIZED_401, HttpStatus.getMessage(401));
-        checkReports(reports, List.of(HealthCheckManager.ENGINE_NAME),
-                HealthCheckManager.SUCCESS_CODE, HealthCheckManager.ENABLED_MESSAGE);
     }
 
     @Test
@@ -216,6 +190,38 @@ public class HealthCheckFeatureTest {
         // with exception
         doThrow(new IllegalStateException(EXPECTED)).when(checker).stop();
         assertFalse(feature.afterShutdown(null));
+    }
+
+    @Test
+    void testGetManager() {
+        assertNotNull(new HealthCheckFeature().getManager());
+    }
+
+    private void checkReports(Reports reports, List<String> reportNames, int code, String message) {
+        reportNames
+            .forEach(name -> assertEquals(1,
+                HealthCheckManagerTest.select(reports, name, code, message).size()));
+    }
+
+    private Reports healthcheck(HealthCheck manager) {
+        var reports = manager.healthCheck();
+        logger.info("{}", reports);
+        return reports;
+    }
+
+    private void checkOpen(int port) throws InterruptedException {
+        if (!NetworkUtil.isTcpPortOpen("localhost", port, 5, 10000L)) {
+            throw new IllegalStateException("cannot connect to port " + port);
+        }
+    }
+
+    private void serverChecks(Reports reports) {
+        checkReports(reports, List.of("HEALTHCHECK", "LIVENESS"),
+            HttpStatus.OK_200, HttpStatus.getMessage(200));
+        checkReports(reports, List.of("UNAUTH"),
+            HttpStatus.UNAUTHORIZED_401, HttpStatus.getMessage(401));
+        checkReports(reports, List.of(HealthCheckManager.ENGINE_NAME),
+            HealthCheckManager.SUCCESS_CODE, HealthCheckManager.ENABLED_MESSAGE);
     }
 
     /**

@@ -27,7 +27,7 @@ import lombok.Getter;
 public class PdpJmx implements PdpJmxMBean  {
 
     @Getter
-    private static PdpJmx instance = new PdpJmx();
+    static PdpJmx instance = new PdpJmx();
 
     private final AtomicLong updates = new AtomicLong();
     private final AtomicLong actions = new AtomicLong();

@@ -98,7 +98,7 @@ import org.slf4j.LoggerFactory;
  * Policy Engine Manager Implementation.
  */
 @ToString(onlyExplicitlyIncluded = true)
-class PolicyEngineManager implements PolicyEngine {
+public class PolicyEngineManager implements PolicyEngine {
     /**
      * String literals.
      */
@@ -843,8 +843,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized void shutdown() {
 
         /*
-         * shutdown activity even when underlying subcomponents (features, controllers, topics, etc
-         * ..) are stuck
+         * shutdown activity even when underlying subcomponents (features, controllers, topics, etc) are stuck
          */
 
         var exitThread = makeShutdownThread();
@@ -884,7 +883,7 @@ class PolicyEngineManager implements PolicyEngine {
             logger.warn("{}: cannot shutdown lock manager because of {}", this, e.getMessage(), e);
         }
 
-        executorService.shutdownNow();
+        getExecutorService().shutdownNow();
 
         // Stop the JMX listener
 
@@ -1329,11 +1328,11 @@ class PolicyEngineManager implements PolicyEngine {
                 policyController.unlock();
                 policyController.start();
             } catch (final Exception e) {
-                logger.error("{}: cannot activate of policy-controller {} because of {}", this, policyController,
-                        e.getMessage(), e);
+                logger.error("{}: cannot activate of policy-controller {} because of {}",
+                    this, policyController, e.getMessage(), e);
             } catch (final LinkageError e) {
-                logger.error("{}: cannot activate (rules compilation) of policy-controller {} because of {}", this,
-                        policyController, e.getMessage(), e);
+                logger.error("{}: cannot activate (rules compilation) of policy-controller {} because of {}",
+                    this, policyController, e.getMessage(), e);
             }
         }
 

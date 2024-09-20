@@ -46,7 +46,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-controller-example.json";
+        "src/test/resources/tosca-policy-native-controller-example.json";
 
     /**
      * Test initialization.
@@ -75,7 +75,7 @@ class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
         ToscaPolicy policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
         ControllerPolicy controllerPolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
         PolicyTypeNativeDroolsController controller =
-                new PolicyTypeNativeDroolsController(policy.getTypeIdentifier(), fsm);
+            new PolicyTypeNativeDroolsController(policy.getTypeIdentifier(), fsm);
         assertTrue(controller.undeploy(policy));
         assertThatIllegalArgumentException().isThrownBy(
             () -> PolicyControllerConstants.getFactory().get(controllerPolicy.getName()));
@@ -103,9 +103,9 @@ class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         ToscaPolicy nativeControllerPolicy =
-                getExamplesPolicy("policies/usecases.native.controller.policy.input.tosca.json", "usecases");
+            getExamplesPolicy("policies/usecases.native.controller.policy.input.tosca.json", "usecases");
         PolicyTypeNativeDroolsController controller =
-                new PolicyTypeNativeDroolsController(nativeControllerPolicy.getTypeIdentifier(), fsm);
+            new PolicyTypeNativeDroolsController(nativeControllerPolicy.getTypeIdentifier(), fsm);
         assertTrue(controller.deploy(nativeControllerPolicy));
         Properties properties = PolicyControllerConstants.getFactory().get("usecases").getProperties();
 
@@ -115,70 +115,90 @@ class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
         assertNull(properties.getProperty("rules.artifactId"));
         assertNull(properties.getProperty("rules.version"));
 
-        assertEquals("dcae_topic,appc-cl,appc-lcm-write,sdnr-cl-rsp",
-                properties.getProperty("noop.source.topics"));
-        assertEquals("appc-cl,appc-lcm-read,policy-cl-mgt,dcae_cl_rsp",
-                properties.getProperty("noop.sink.topics"));
+        assertSourceTopics(properties);
 
-        assertEquals("org.onap.policy.controlloop.CanonicalOnset,org.onap.policy.controlloop.CanonicalAbated",
-                properties.getProperty("noop.source.topics.dcae_topic.events"));
-        assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
-            properties
-                .getProperty("noop.source.topics.dcae_topic.events.org.onap.policy.controlloop.CanonicalOnset.filter"));
-        assertEquals("[?($.closedLoopEventStatus == 'ABATED')]",
-            properties
-                .getProperty("noop.source.topics.dcae_topic.events."
-                                     + "org.onap.policy.controlloop.CanonicalAbated.filter"));
-        assertEquals("org.onap.policy.controlloop.util.Serialization,gson",
-                properties.getProperty("noop.source.topics.dcae_topic.events.custom.gson"));
-
-        assertEquals("org.onap.policy.appc.Response", properties.getProperty("noop.source.topics.appc-cl.events"));
-        assertEquals("[?($.CommonHeader && $.Status)]",
-                properties
-                        .getProperty("noop.source.topics.appc-cl.events.org.onap.policy.appc.Response.filter"));
-        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
-                properties.getProperty("noop.source.topics.appc-cl.events.custom.gson"));
-
-        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
-                properties.getProperty("noop.source.topics.appc-lcm-write.events"));
-        assertEquals("[?($.type == 'response')]",
-            properties
-                .getProperty("noop.source.topics.appc-lcm-write.events."
-                        + "org.onap.policy.appclcm.AppcLcmMessageWrapper.filter"));
-        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
-                properties.getProperty("noop.source.topics.appc-lcm-write.events.custom.gson"));
-
-        assertEquals("org.onap.policy.sdnr.PciResponseWrapper",
-                properties.getProperty("noop.source.topics.sdnr-cl-rsp.events"));
-        assertEquals("[?($.type == 'response')]",
-                properties
-                        .getProperty("noop.source.topics.sdnr-cl-rsp.events."
-                                             + "org.onap.policy.sdnr.PciResponseWrapper.filter"));
-        assertEquals("org.onap.policy.sdnr.util.Serialization,gson",
-                properties.getProperty("noop.source.topics.sdnr-cl-rsp.events.custom.gson"));
-
-        assertEquals("org.onap.policy.appc.Request", properties.getProperty("noop.sink.topics.appc-cl.events"));
-        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
-                properties.getProperty("noop.sink.topics.appc-cl.events.custom.gson"));
-
-        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
-                properties.getProperty("noop.sink.topics.appc-lcm-read.events"));
-        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
-                properties.getProperty("noop.sink.topics.appc-lcm-read.events.custom.gson"));
-
-        assertEquals("org.onap.policy.controlloop.VirtualControlLoopNotification",
-                properties.getProperty("noop.sink.topics.policy-cl-mgt.events"));
-        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
-                properties.getProperty("noop.sink.topics.policy-cl-mgt.events.custom.gson"));
-
-        assertEquals("org.onap.policy.controlloop.ControlLoopResponse",
-                properties.getProperty("noop.sink.topics.dcae_cl_rsp.events"));
-        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
-                properties.getProperty("noop.sink.topics.dcae_cl_rsp.events.custom.gson"));
+        assertSinkTopics(properties);
 
         assertEquals("test", properties.getProperty("notes"));
         assertEquals("auto", properties.getProperty("persistence.type"));
 
         assertTrue(controller.undeploy(nativeControllerPolicy));
+    }
+
+    private static void assertSourceTopics(Properties properties) {
+        assertEquals("dcae_topic,appc-cl,appc-lcm-write,sdnr-cl-rsp",
+            properties.getProperty("noop.source.topics"));
+
+        assertEquals("org.onap.policy.controlloop.CanonicalOnset,org.onap.policy.controlloop.CanonicalAbated",
+            properties.getProperty("noop.source.topics.dcae_topic.events"));
+
+        assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
+            properties.getProperty("noop.source.topics.dcae_topic.events."
+                + "org.onap.policy.controlloop.CanonicalOnset.filter"));
+
+        assertEquals("[?($.closedLoopEventStatus == 'ABATED')]",
+            properties.getProperty("noop.source.topics.dcae_topic.events."
+                + "org.onap.policy.controlloop.CanonicalAbated.filter"));
+
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gson",
+            properties.getProperty("noop.source.topics.dcae_topic.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appc.Response",
+            properties.getProperty("noop.source.topics.appc-cl.events"));
+
+        assertEquals("[?($.CommonHeader && $.Status)]",
+            properties.getProperty("noop.source.topics.appc-cl.events.org.onap.policy.appc.Response.filter"));
+
+        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
+            properties.getProperty("noop.source.topics.appc-cl.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
+            properties.getProperty("noop.source.topics.appc-lcm-write.events"));
+
+        assertEquals("[?($.type == 'response')]",
+            properties.getProperty("noop.source.topics.appc-lcm-write.events."
+                + "org.onap.policy.appclcm.AppcLcmMessageWrapper.filter"));
+
+        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
+            properties.getProperty("noop.source.topics.appc-lcm-write.events.custom.gson"));
+
+        assertEquals("org.onap.policy.sdnr.PciResponseWrapper",
+            properties.getProperty("noop.source.topics.sdnr-cl-rsp.events"));
+
+        assertEquals("[?($.type == 'response')]",
+            properties.getProperty("noop.source.topics.sdnr-cl-rsp.events."
+                + "org.onap.policy.sdnr.PciResponseWrapper.filter"));
+
+        assertEquals("org.onap.policy.sdnr.util.Serialization,gson",
+            properties.getProperty("noop.source.topics.sdnr-cl-rsp.events.custom.gson"));
+    }
+
+    private static void assertSinkTopics(Properties properties) {
+        assertEquals("appc-cl,appc-lcm-read,policy-cl-mgt,dcae_cl_rsp",
+            properties.getProperty("noop.sink.topics"));
+
+        assertEquals("org.onap.policy.appc.Request",
+            properties.getProperty("noop.sink.topics.appc-cl.events"));
+
+        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
+            properties.getProperty("noop.sink.topics.appc-cl.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
+            properties.getProperty("noop.sink.topics.appc-lcm-read.events"));
+
+        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
+            properties.getProperty("noop.sink.topics.appc-lcm-read.events.custom.gson"));
+
+        assertEquals("org.onap.policy.controlloop.VirtualControlLoopNotification",
+            properties.getProperty("noop.sink.topics.policy-cl-mgt.events"));
+
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
+            properties.getProperty("noop.sink.topics.policy-cl-mgt.events.custom.gson"));
+
+        assertEquals("org.onap.policy.controlloop.ControlLoopResponse",
+            properties.getProperty("noop.sink.topics.dcae_cl_rsp.events"));
+
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
+            properties.getProperty("noop.sink.topics.dcae_cl_rsp.events.custom.gson"));
     }
 }

@@ -21,6 +21,16 @@
 
 package org.onap.policy.drools.server.restful;
 
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.CREATED;
+import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static jakarta.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
+import static jakarta.ws.rs.core.Response.Status.NOT_MODIFIED;
+import static jakarta.ws.rs.core.Response.Status.OK;
+import static jakarta.ws.rs.core.Response.Status.PARTIAL_CONTENT;
+import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME;
+
 import ch.qos.logback.classic.LoggerContext;
 import com.google.re2j.Pattern;
 import jakarta.ws.rs.Consumes;
@@ -56,6 +66,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
@@ -64,15 +75,13 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.properties.DroolsPropertyConstants;
-import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
-import org.onap.policy.drools.protocol.coders.ProtocolCoderToolset;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
+import org.onap.policy.drools.system.PolicyDroolsPdpRuntimeException;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,13 +95,12 @@ import org.slf4j.LoggerFactory;
 @Consumes({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @ToString
 public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsApi,
-        PropertiesApi, EnvironmentApi, SwitchesApi, ControllersApi,
-        TopicsApi, ToolsApi {
+    PropertiesApi, EnvironmentApi, SwitchesApi, ControllersApi,
+    TopicsApi, ToolsApi {
 
     private static final String OFFER_FAILED = "{}: cannot offer to topic {} because of {}";
     private static final String CANNOT_PERFORM_OPERATION = "cannot perform operation";
-    private static final String NO_FILTERS = " no filters";
-    private static final String NOT_FOUND = " not found: ";
+    private static final String NO_FILTERS = " has no filters";
     private static final String NOT_FOUND_MSG = " not found";
     private static final String DOES_NOT_EXIST_MSG = " does not exist";
     private static final String NOT_ACCEPTABLE_MSG = " not acceptable";
@@ -144,19 +152,12 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/swagger")
     public Response swagger() {
-
-        try (InputStream inputStream = getClass().getResourceAsStream(SWAGGER);
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-            String contents = reader.lines()
-                    .collect(Collectors.joining(System.lineSeparator()));
-            return Response.status(Response.Status.OK)
-                        .entity(contents)
-                        .build();
-        } catch (IOException e) {
-            logger.error("Cannot read swagger.json {} because of {}", e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .build();
+        try {
+            String contents = getSwaggerContents();
+            return Response.status(OK).entity(contents).build();
+        } catch (Exception e) {
+            logger.error("Cannot read swagger.json {} because of {}", e.getMessage(), e.toString());
+            return Response.status(INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -170,7 +171,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine")
     public Response engine() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
     }
 
     /**
@@ -187,10 +188,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         } catch (final IllegalStateException e) {
             logger.error("{}: cannot shutdown {} because of {}", this, PolicyEngineConstants.getManager(),
                 e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(PolicyEngineConstants.getManager()).build();
+            return Response.status(BAD_REQUEST).entity(PolicyEngineConstants.getManager()).build();
         }
 
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
     }
 
     /**
@@ -202,15 +203,14 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/features")
     public Response engineFeatures() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getFeatures()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getFeatures()).build();
     }
 
     @Override
     @GET
     @Path("engine/features/inventory")
     public Response engineFeaturesInventory() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getFeatureProviders())
-            .build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getFeatureProviders()).build();
     }
 
     /**
@@ -223,11 +223,11 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/features/{featureName}")
     public Response engineFeature(@PathParam("featureName") String featureName) {
         try {
-            return Response.status(Response.Status.OK)
-                .entity(PolicyEngineConstants.getManager().getFeatureProvider(featureName)).build();
+            return Response.status(OK).entity(PolicyEngineConstants.getManager().getFeatureProvider(featureName))
+                .build();
         } catch (final IllegalArgumentException iae) {
             logger.debug("feature unavailable: {}", featureName, iae);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(iae.getMessage())).build();
+            return errorResponse(NOT_FOUND, iae.getMessage());
         }
     }
 
@@ -240,7 +240,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/inputs")
     public Response engineInputs() {
-        return Response.status(Response.Status.OK).entity(INPUTS).build();
+        return Response.status(OK).entity(INPUTS).build();
     }
 
     /**
@@ -252,22 +252,16 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @POST
     @Path("engine/inputs/configuration")
     public Response engineUpdate(PdpdConfiguration configuration) {
-        final PolicyController controller = null;
-        boolean success;
         try {
-            success = PolicyEngineConstants.getManager().configure(configuration);
+            if (PolicyEngineConstants.getManager().configure(configuration)) {
+                return Response.status(OK).entity(true).build();
+            }
         } catch (final Exception e) {
-            success = false;
             logger.info("{}: cannot configure {} because of {}", this, PolicyEngineConstants.getManager(),
                 e.getMessage(), e);
         }
 
-        if (!success) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION))
-                .build();
-        } else {
-            return Response.status(Response.Status.OK).entity(controller).build();
-        }
+        return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
     }
 
     /**
@@ -279,7 +273,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/properties")
     public Response engineProperties() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getProperties()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getProperties()).build();
     }
 
     /**
@@ -291,7 +285,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/environment")
     public Response engineEnvironment() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getEnvironment()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getEnvironment()).build();
     }
 
     /**
@@ -304,8 +298,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/environment/{envProperty}")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response engineEnvironmentProperty(@PathParam("envProperty") String envProperty) {
-        return Response.status(Response.Status.OK)
-            .entity(PolicyEngineConstants.getManager().getEnvironmentProperty(envProperty)).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getEnvironmentProperty(envProperty))
+            .build();
     }
 
     /**
@@ -320,7 +314,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Produces(MediaType.TEXT_PLAIN)
     public Response engineEnvironmentAdd(@PathParam("envProperty") String envProperty, String envValue) {
         final String previousValue = PolicyEngineConstants.getManager().setEnvironmentProperty(envProperty, envValue);
-        return Response.status(Response.Status.OK).entity(previousValue).build();
+        return Response.status(OK).entity(previousValue).build();
     }
 
     /**
@@ -332,7 +326,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/switches")
     public Response engineSwitches() {
-        return Response.status(Response.Status.OK).entity(SWITCHES).build();
+        return Response.status(OK).entity(SWITCHES).build();
     }
 
     /**
@@ -344,21 +338,15 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @PUT
     @Path("engine/switches/activation")
     public Response engineActivation() {
-        var success = true;
         try {
             PolicyEngineConstants.getManager().activate();
+            return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
         } catch (final Exception e) {
-            success = false;
             logger.info("{}: cannot activate {} because of {}", this, PolicyEngineConstants.getManager(),
                 e.getMessage(), e);
         }
 
-        if (!success) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION))
-                .build();
-        } else {
-            return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager()).build();
-        }
+        return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
     }
 
     /**
@@ -370,21 +358,15 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @DELETE
     @Path("engine/switches/activation")
     public Response engineDeactivation() {
-        var success = true;
         try {
             PolicyEngineConstants.getManager().deactivate();
+            return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
         } catch (final Exception e) {
-            success = false;
             logger.info("{}: cannot deactivate {} because of {}", this, PolicyEngineConstants.getManager(),
                 e.getMessage(), e);
         }
 
-        if (!success) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION))
-                .build();
-        } else {
-            return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager()).build();
-        }
+        return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
     }
 
     /**
@@ -396,11 +378,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @PUT
     @Path("engine/switches/lock")
     public Response engineLock() {
-        final boolean success = PolicyEngineConstants.getManager().lock();
-        if (success) {
-            return Response.status(Status.OK).entity(PolicyEngineConstants.getManager()).build();
+        if (PolicyEngineConstants.getManager().lock()) {
+            return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION)).build();
+            return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
         }
     }
 
@@ -413,11 +394,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @DELETE
     @Path("engine/switches/lock")
     public Response engineUnlock() {
-        final boolean success = PolicyEngineConstants.getManager().unlock();
-        if (success) {
-            return Response.status(Status.OK).entity(PolicyEngineConstants.getManager()).build();
+        if (PolicyEngineConstants.getManager().unlock()) {
+            return Response.status(OK).entity(PolicyEngineConstants.getManager()).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION)).build();
+            return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
         }
     }
 
@@ -430,8 +410,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers")
     public Response controllers() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getPolicyControllerIds())
-            .build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getPolicyControllerIds()).build();
     }
 
     /**
@@ -443,8 +422,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/inventory")
     public Response controllerInventory() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getPolicyControllers())
-            .build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getPolicyControllers()).build();
     }
 
     /**
@@ -457,54 +435,48 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/controllers")
     public Response controllerAdd(Properties config) {
         if (config == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new Error("A configuration must be provided"))
-                .build();
+            return errorResponse(BAD_REQUEST, "A configuration must be provided");
         }
 
-        final String controllerName = config.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME);
+        var controllerName = config.getProperty(PROPERTY_CONTROLLER_NAME);
         if (controllerName == null || controllerName.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new Error(
-                    "Configuration must have an entry for " + DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME))
-                .build();
+            return errorResponse(BAD_REQUEST, "Configuration must have an entry for "
+                + PROPERTY_CONTROLLER_NAME);
         }
 
         PolicyController controller;
         try {
             controller = PolicyControllerConstants.getFactory().get(controllerName);
             if (controller != null) {
-                return Response.status(Response.Status.NOT_MODIFIED).entity(controller).build();
+                return Response.status(NOT_MODIFIED).entity(controller).build();
             }
         } catch (final IllegalArgumentException e) {
             logger.trace("OK ", e);
             // This is OK
         } catch (final IllegalStateException e) {
             logger.info(FETCH_POLICY_FAILED, this, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new Error(controllerName + NOT_FOUND_MSG))
-                .build();
+            return errorResponse(NOT_ACCEPTABLE, controllerName + NOT_FOUND_MSG);
         }
 
         try {
             controller = PolicyEngineConstants.getManager().createPolicyController(
-                config.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME), config);
+                config.getProperty(PROPERTY_CONTROLLER_NAME), config);
         } catch (IllegalArgumentException | IllegalStateException e) {
             logger.warn("{}: cannot create policy-controller because of {}", this, e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+            return errorResponse(BAD_REQUEST, e.getMessage());
         }
 
         try {
-            final boolean success = controller.start();
-            if (!success) {
+            if (!controller.start()) {
                 logger.info("{}: cannot start {}", this, controller);
-                return Response.status(Response.Status.PARTIAL_CONTENT)
-                    .entity(new Error(controllerName + " can't be started")).build();
+                return errorResponse(PARTIAL_CONTENT, controllerName + " can't be started");
             }
         } catch (final IllegalStateException e) {
             logger.info("{}: cannot start {} because of {}", this, controller, e.getMessage(), e);
-            return Response.status(Response.Status.PARTIAL_CONTENT).entity(controller).build();
+            return Response.status(PARTIAL_CONTENT).entity(controller).build();
         }
 
-        return Response.status(Response.Status.CREATED).entity(controller).build();
+        return Response.status(CREATED).entity(controller).build();
     }
 
     /**
@@ -516,7 +488,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/features")
     public Response controllerFeatures() {
-        return Response.status(Response.Status.OK).entity(PolicyEngineConstants.getManager().getFeatures()).build();
+        return Response.status(OK).entity(PolicyEngineConstants.getManager().getFeatures()).build();
     }
 
     /**
@@ -528,8 +500,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/features/inventory")
     public Response controllerFeaturesInventory() {
-        return Response.status(Response.Status.OK)
-            .entity(PolicyControllerConstants.getFactory().getFeatureProviders()).build();
+        return Response.status(OK).entity(PolicyControllerConstants.getFactory().getFeatureProviders()).build();
     }
 
     /**
@@ -542,12 +513,11 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/controllers/features/{featureName}")
     public Response controllerFeature(@PathParam("featureName") String featureName) {
         try {
-            return Response.status(Response.Status.OK)
-                .entity(PolicyControllerConstants.getFactory().getFeatureProvider(featureName))
+            return Response.status(OK).entity(PolicyControllerConstants.getFactory().getFeatureProvider(featureName))
                 .build();
         } catch (final IllegalArgumentException iae) {
             logger.debug("{}: cannot feature {} because of {}", this, featureName, iae.getMessage(), iae);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(iae.getMessage())).build();
+            return errorResponse(NOT_FOUND, iae.getMessage());
         }
     }
 
@@ -562,8 +532,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response controller(@PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(
-            () -> Response.status(Response.Status.OK)
-                .entity(PolicyControllerConstants.getFactory().get(controllerName)).build(),
+            () -> Response.status(OK).entity(PolicyControllerConstants.getFactory().get(controllerName)).build(),
             e -> {
                 logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
                 return (controllerName);
@@ -584,28 +553,25 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         try {
             controller = PolicyControllerConstants.getFactory().get(controllerName);
             if (controller == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + DOES_NOT_EXIST_MSG)).build();
+                return errorResponse(BAD_REQUEST, controllerName + DOES_NOT_EXIST_MSG);
             }
         } catch (final IllegalArgumentException e) {
             logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new Error(controllerName + NOT_FOUND + e.getMessage())).build();
+            return errorResponse(BAD_REQUEST, controllerName + NOT_FOUND_MSG + ": " + e.getMessage());
         } catch (final IllegalStateException e) {
             logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
+            return errorResponse(NOT_ACCEPTABLE, controllerName + NOT_ACCEPTABLE_MSG);
         }
 
         try {
             PolicyEngineConstants.getManager().removePolicyController(controllerName);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            logger.debug("{}: cannot remove policy-controller {} because of {}", this, controllerName, e.getMessage(),
-                e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
+            logger.debug("{}: cannot remove policy-controller {} because of {}",
+                this, controllerName, e.getMessage(), e);
+            return errorResponse(INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
-        return Response.status(Response.Status.OK).entity(controller).build();
+        return Response.status(OK).entity(controller).build();
     }
 
     /**
@@ -620,8 +586,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response controllerProperties(@PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(() -> {
-            final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
-            return Response.status(Response.Status.OK).entity(controller.getProperties()).build();
+            var controller = PolicyControllerConstants.getFactory().get(controllerName);
+            return Response.status(OK).entity(controller.getProperties()).build();
 
         }, e -> {
             logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
@@ -638,7 +604,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/{controller}/inputs")
     public Response controllerInputs(@PathParam("controller") String controllerName) {
-        return Response.status(Response.Status.OK).entity(INPUTS).build();
+        return Response.status(OK).entity(INPUTS).build();
     }
 
     /**
@@ -650,27 +616,25 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @POST
     @Path("engine/controllers/{controller}/inputs/configuration")
     public Response controllerUpdate(ControllerConfiguration controllerConfiguration,
-            @PathParam("controller") String controllerName) {
+                                     @PathParam("controller") String controllerName) {
 
-        if (controllerName == null || controllerName.isEmpty() || controllerConfiguration == null
+        if (StringUtils.isBlank(controllerName) || controllerConfiguration == null
             || !controllerName.equals(controllerConfiguration.getName())) {
-            return Response.status(Response.Status.BAD_REQUEST)
+            return Response.status(BAD_REQUEST)
                 .entity("A valid or matching controller names must be provided").build();
         }
 
         return catchArgStateGenericEx(() -> {
-            var controller =
-                PolicyEngineConstants.getManager().updatePolicyController(controllerConfiguration);
+            var controller = PolicyEngineConstants.getManager().updatePolicyController(controllerConfiguration);
             if (controller == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + DOES_NOT_EXIST_MSG)).build();
+                return errorResponse(BAD_REQUEST, controllerName + DOES_NOT_EXIST_MSG);
             }
 
-            return Response.status(Response.Status.OK).entity(controller).build();
+            return Response.status(OK).entity(controller).build();
 
         }, e -> {
-            logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName,
-                e.getMessage(), e);
+            logger.info("{}: cannot update policy-controller {} because of {}",
+                this, controllerName, e.getMessage(), e);
             return (controllerName);
         });
     }
@@ -684,7 +648,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/{controller}/switches")
     public Response controllerSwitches(@PathParam("controller") String controllerName) {
-        return Response.status(Response.Status.OK).entity(SWITCHES).build();
+        return Response.status(OK).entity(SWITCHES).build();
     }
 
     /**
@@ -697,12 +661,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/controllers/{controller}/switches/lock")
     public Response controllerLock(@PathParam("controller") String controllerName) {
         var policyController = PolicyControllerConstants.getFactory().get(controllerName);
-        final boolean success = policyController.lock();
-        if (success) {
-            return Response.status(Status.OK).entity(policyController).build();
+        if (policyController.lock()) {
+            return Response.status(OK).entity(policyController).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE)
-                .entity(new Error("Controller " + controllerName + " cannot be locked")).build();
+            return errorResponse(NOT_ACCEPTABLE, "Controller " + controllerName + " cannot be locked");
         }
     }
 
@@ -718,10 +680,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         var policyController = PolicyControllerConstants.getFactory().get(controllerName);
         final boolean success = policyController.unlock();
         if (success) {
-            return Response.status(Status.OK).entity(policyController).build();
+            return Response.status(OK).entity(policyController).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE)
-                .entity(new Error("Controller " + controllerName + " cannot be unlocked")).build();
+            return errorResponse(NOT_ACCEPTABLE, "Controller " + controllerName + " cannot be unlocked");
         }
     }
 
@@ -737,7 +698,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         return catchArgStateGenericEx(() -> {
             var drools = this.getDroolsController(controllerName);
-            return Response.status(Response.Status.OK).entity(drools).build();
+            return Response.status(OK).entity(drools).build();
 
         }, e -> {
             logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
@@ -778,7 +739,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/controllers/{controller}/drools/facts/{session}")
     public Response droolsFacts1(@PathParam("controller") String controllerName,
-        @PathParam("session") String sessionName) {
+                                 @PathParam("session") String sessionName) {
 
         return catchArgStateGenericEx(() -> {
             var drools = this.getDroolsController(controllerName);
@@ -917,8 +878,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         }, e -> {
             logger.debug(FETCH_DROOLS_BY_PARAMS_FAILED,
-                this, controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e);
-            return (controllerName + ":" + sessionName + ":" + queryName + queriedEntity);
+                this, controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e.toString());
+            return (controllerName + ":" + sessionName + ":" + queryName + ":" + queriedEntity);
         });
     }
 
@@ -931,7 +892,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @POST
     @Path("engine/controllers/tools/coders/decoders/filters/rule")
     public Response rules(String expression) {
-        return Response.status(Status.OK).entity(new JsonProtocolFilter(expression)).build();
+        return Response.status(OK).entity(new JsonProtocolFilter(expression)).build();
     }
 
     /**
@@ -949,8 +910,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
             return EventProtocolCoderConstants.getManager().getDecoders(drools.getGroupId(), drools.getArtifactId());
 
         }, e -> {
-            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
-                e.getMessage(), e);
+            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName, e.getMessage(), e);
             return (controllerName);
         });
     }
@@ -1013,11 +973,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         return catchArgStateGenericEx(() -> {
             var drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
+            var decoder = EventProtocolCoderConstants.getManager()
                 .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
             if (decoder == null) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new Error(topic + DOES_NOT_EXIST_MSG))
-                    .build();
+                return errorResponse(BAD_REQUEST, topic + DOES_NOT_EXIST_MSG);
             } else {
                 return decoder.getCoders();
             }
@@ -1043,19 +1002,17 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         return catchArgStateGenericEx(() -> {
             var drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
+            var decoder = EventProtocolCoderConstants.getManager()
                 .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
-            final CoderFilters filters = decoder.getCoder(factClass);
+            var filters = decoder.getCoder(factClass);
             if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
+                return errorResponse(BAD_REQUEST, topic + ":" + factClass + DOES_NOT_EXIST_MSG);
             } else {
                 return filters;
             }
 
         }, e -> {
-            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
-                controllerName, topic, factClass, e.getMessage(), e);
+            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this, controllerName, topic, factClass, e.getMessage(), e);
             return (controllerName + ":" + topic + ":" + factClass);
         });
     }
@@ -1069,24 +1026,22 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @PUT
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}")
     public Response decoderFilter(
-            JsonProtocolFilter configFilters,
-            @PathParam("controller") String controllerName,
-            @PathParam("topic") String topic,
-            @PathParam("factType") String factClass) {
+        JsonProtocolFilter configFilters,
+        @PathParam("controller") String controllerName,
+        @PathParam("topic") String topic,
+        @PathParam("factType") String factClass) {
 
         if (configFilters == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new Error("Configuration Filters not provided"))
-                .build();
+            return errorResponse(BAD_REQUEST, "Configuration Filters not provided");
         }
 
         return catchArgStateGenericEx(() -> {
             var drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
+            var decoder = EventProtocolCoderConstants.getManager()
                 .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
-            final CoderFilters filters = decoder.getCoder(factClass);
+            var filters = decoder.getCoder(factClass);
             if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
+                return errorResponse(BAD_REQUEST, topic + ":" + factClass + DOES_NOT_EXIST_MSG);
             }
             filters.setFilter(configFilters);
             return filters;
@@ -1112,24 +1067,14 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         @PathParam("factType") String factClass) {
 
         return catchArgStateGenericEx(() -> {
-            var drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
-                .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
+            var result = this.checkControllerDecoderAndFilter(controllerName, topic, factClass);
 
-            final CoderFilters filters = decoder.getCoder(factClass);
-            if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
+            if (result instanceof Response) {
+                return result;
+            } else {
+                var filter = (JsonProtocolFilter) result;
+                return filter.getRule();
             }
-
-            final JsonProtocolFilter filter = filters.getFilter();
-            if (filter == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
-            }
-
-            return filter.getRule();
-
         }, e -> {
             logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
                 controllerName, topic, factClass, e.getMessage(), e);
@@ -1151,24 +1096,16 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         @PathParam("factType") String factClass) {
 
         return catchArgStateGenericEx(() -> {
-            var drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
-                .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
+            var result = this.checkControllerDecoderAndFilter(controllerName, topic, factClass);
 
-            final CoderFilters filters = decoder.getCoder(factClass);
-            if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
+            if (result instanceof Response) {
+                return result;
+            } else {
+                var filter = (JsonProtocolFilter) result;
+
+                filter.setRule(null);
+                return filter.getRule();
             }
-
-            final JsonProtocolFilter filter = filters.getFilter();
-            if (filter == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
-            }
-
-            filter.setRule(null);
-            return filter.getRule();
 
         }, e -> {
             logger.debug(FETCH_DECODER_BY_TYPE_FAILED,
@@ -1193,36 +1130,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         return catchArgStateGenericEx(() -> decoderFilterRule2(controllerName, topic, factClass, rule), e -> {
             logger.debug("{}: cannot access decoder filter rules for policy-controller {} "
-                + "topic {} type {} because of {}",
+                    + "topic {} type {} because of {}",
                 this, controllerName, topic, factClass, e.getMessage(), e);
             return (controllerName + ":" + topic + ":" + factClass);
         });
-    }
-
-    private Object decoderFilterRule2(String controllerName, String topic, String factClass, String rule) {
-        var drools = this.getDroolsController(controllerName);
-        final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
-            .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
-
-        final CoderFilters filters = decoder.getCoder(factClass);
-        if (filters == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new Error(controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
-        }
-
-        final JsonProtocolFilter filter = filters.getFilter();
-        if (filter == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
-        }
-
-        if (rule == null || rule.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new Error(controllerName + ":" + topic + ":"
-                + factClass + " no filter rule provided")).build();
-        }
-
-        filter.setRule(rule);
-        return filter.getRule();
     }
 
     /**
@@ -1239,30 +1150,15 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         @PathParam("topic") String topic,
         String json) {
 
-        if (!checkValidNameInput(controllerName)) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error("controllerName contains whitespaces " + NOT_ACCEPTABLE_MSG)).build();
+        if (StringUtils.isBlank(controllerName)) {
+            return errorResponse(NOT_ACCEPTABLE, "controllerName contains whitespaces " + NOT_ACCEPTABLE_MSG);
         }
 
-        if (!checkValidNameInput(topic)) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error("topic contains whitespaces " + NOT_ACCEPTABLE_MSG)).build();
+        if (StringUtils.isBlank(topic)) {
+            return errorResponse(NOT_ACCEPTABLE, "topic contains whitespaces " + NOT_ACCEPTABLE_MSG);
         }
 
-        PolicyController policyController;
-        try {
-            policyController = PolicyControllerConstants.getFactory().get(controllerName);
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                .entity(new Error(controllerName + ":" + topic + ":" + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error(controllerName + ":" + topic + ":" + NOT_ACCEPTABLE_MSG)).build();
-        }
+        var drools = getDroolsController(controllerName);
 
         var result = new CodingResult();
         result.setDecoding(false);
@@ -1271,25 +1167,24 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         Object event;
         try {
-            event = EventProtocolCoderConstants.getManager().decode(policyController.getDrools().getGroupId(),
-                policyController.getDrools().getArtifactId(), topic, json);
+            event = EventProtocolCoderConstants.getManager()
+                .decode(drools.getGroupId(), drools.getArtifactId(), topic, json);
             result.setDecoding(true);
         } catch (final Exception e) {
-            logger.debug(FETCH_POLICY_BY_TOPIC_FAILED, this, controllerName, topic,
-                e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+            logger.debug(FETCH_POLICY_BY_TOPIC_FAILED, this, controllerName, topic, e.getMessage(), e);
+            return errorResponse(BAD_REQUEST, e.getMessage());
         }
 
         try {
             result.setJsonEncoding(EventProtocolCoderConstants.getManager().encode(topic, event));
             result.setEncoding(true);
         } catch (final Exception e) {
-            // continue so to propagate decoding results ..
-            logger.debug("{}: cannot encode for policy-controller {} topic {} because of {}", this, controllerName,
-                topic, e.getMessage(), e);
+            // continue so to propagate decoding results ...
+            logger.debug("{}: cannot encode for policy-controller {} topic {} because of {}",
+                this, controllerName, topic, e.getMessage(), e);
         }
 
-        return Response.status(Response.Status.OK).entity(result).build();
+        return Response.status(OK).entity(result).build();
     }
 
     /**
@@ -1303,14 +1198,12 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response encoderFilters(@PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(() -> {
-            final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
-            var drools = controller.getDrools();
+            var drools = getDroolsController(controllerName);
             return EventProtocolCoderConstants.getManager()
                 .getEncoderFilters(drools.getGroupId(), drools.getArtifactId());
 
         }, e -> {
-            logger.debug(FETCH_ENCODER_BY_FILTER_FAILED, this, controllerName,
-                e.getMessage(), e);
+            logger.debug(FETCH_ENCODER_BY_FILTER_FAILED, this, controllerName, e.getMessage(), e);
             return (controllerName);
         });
     }
@@ -1319,14 +1212,14 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/topics")
     public Response topics() {
-        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager()).build();
+        return Response.status(OK).entity(TopicEndpointManager.getManager()).build();
     }
 
     @Override
     @GET
     @Path("engine/topics/switches")
     public Response topicSwitches() {
-        return Response.status(Response.Status.OK).entity(SWITCHES).build();
+        return Response.status(OK).entity(SWITCHES).build();
     }
 
     /**
@@ -1338,11 +1231,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @PUT
     @Path("engine/topics/switches/lock")
     public Response topicsLock() {
-        final boolean success = TopicEndpointManager.getManager().lock();
-        if (success) {
-            return Response.status(Status.OK).entity(TopicEndpointManager.getManager()).build();
+        if (TopicEndpointManager.getManager().lock()) {
+            return Response.status(OK).entity(TopicEndpointManager.getManager()).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION)).build();
+            return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
         }
     }
 
@@ -1355,11 +1247,10 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @DELETE
     @Path("engine/topics/switches/lock")
     public Response topicsUnlock() {
-        final boolean success = TopicEndpointManager.getManager().unlock();
-        if (success) {
-            return Response.status(Status.OK).entity(TopicEndpointManager.getManager()).build();
+        if (TopicEndpointManager.getManager().unlock()) {
+            return Response.status(OK).entity(TopicEndpointManager.getManager()).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(new Error(CANNOT_PERFORM_OPERATION)).build();
+            return errorResponse(NOT_ACCEPTABLE, CANNOT_PERFORM_OPERATION);
         }
     }
 
@@ -1372,7 +1263,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/topics/sources")
     public Response sources() {
-        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager().getTopicSources()).build();
+        return Response.status(OK).entity(TopicEndpointManager.getManager().getTopicSources()).build();
     }
 
     /**
@@ -1384,7 +1275,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @GET
     @Path("engine/topics/sinks")
     public Response sinks() {
-        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager().getTopicSinks()).build();
+        return Response.status(OK).entity(TopicEndpointManager.getManager().getTopicSinks()).build();
     }
 
     /**
@@ -1395,15 +1286,13 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/topics/sources/{comm: kafka|noop}")
     public Response commSources(
         @PathParam("comm") String comm) {
-        if (!checkValidNameInput(comm)) {
-            return Response
-                .status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error("source communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG))
-                .build();
+        if (StringUtils.isBlank(comm)) {
+            return errorResponse(NOT_ACCEPTABLE,
+                "source communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG);
         }
 
         List<TopicSource> sources = new ArrayList<>();
-        var status = Status.OK;
+        var status = OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case NOOP:
                 sources.addAll(TopicEndpointManager.getManager().getNoopTopicSources());
@@ -1412,8 +1301,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
                 sources.addAll(TopicEndpointManager.getManager().getKafkaTopicSources());
                 break;
             default:
-                status = Status.BAD_REQUEST;
-                logger.debug("Invalid communication mechanism");
+                status = BAD_REQUEST;
+                logger.debug("{} is invalid communication mechanism", comm);
                 break;
         }
         return Response.status(status).entity(sources).build();
@@ -1427,15 +1316,13 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/topics/sinks/{comm: kafka|noop}")
     public Response commSinks(
         @PathParam("comm") String comm) {
-        if (!checkValidNameInput(comm)) {
-            return Response
-                .status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error("sink communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG))
-                .build();
+        if (StringUtils.isBlank(comm)) {
+            return errorResponse(NOT_ACCEPTABLE,
+                "sink communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG);
         }
 
         List<TopicSink> sinks = new ArrayList<>();
-        var status = Status.OK;
+        var status = OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case NOOP:
                 sinks.addAll(TopicEndpointManager.getManager().getNoopTopicSinks());
@@ -1444,8 +1331,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
                 sinks.addAll(TopicEndpointManager.getManager().getKafkaTopicSinks());
                 break;
             default:
-                status = Status.BAD_REQUEST;
-                logger.debug("Invalid communication mechanism");
+                status = BAD_REQUEST;
+                logger.debug("{} is invalid communication mechanism", comm);
                 break;
         }
         return Response.status(status).entity(sinks).build();
@@ -1460,11 +1347,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response sourceTopic(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response
-            .status(Response.Status.OK)
-            .entity(TopicEndpointManager.getManager()
-                .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
-            .build();
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return Response.status(OK).entity(source).build();
     }
 
     /**
@@ -1476,11 +1361,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response sinkTopic(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response
-            .status(Response.Status.OK)
-            .entity(TopicEndpointManager.getManager()
-                .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
-            .build();
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return Response.status(OK).entity(sink).build();
     }
 
     /**
@@ -1492,11 +1375,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response sourceEvents(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response.status(Status.OK)
-            .entity(Arrays.asList(TopicEndpointManager.getManager()
-                .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
-                .getRecentEvents()))
-            .build();
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return Response.status(OK).entity(Arrays.asList(source.getRecentEvents())).build();
     }
 
     /**
@@ -1508,11 +1389,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response sinkEvents(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response.status(Status.OK)
-            .entity(Arrays.asList(TopicEndpointManager.getManager()
-                .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
-                .getRecentEvents()))
-            .build();
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return Response.status(OK).entity(Arrays.asList(sink.getRecentEvents())).build();
     }
 
     /**
@@ -1524,7 +1403,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSourceTopicSwitches(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(SWITCHES).build();
+        return Response.status(OK).entity(SWITCHES).build();
     }
 
     /**
@@ -1536,7 +1415,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSinkTopicSwitches(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(SWITCHES).build();
+        return Response.status(OK).entity(SWITCHES).build();
     }
 
     /**
@@ -1548,13 +1427,13 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSourceTopicLock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var source =
-            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.lock(), source);
     }
 
     /**
-     * DELETEs the lock on a topic.
+     * Deletes the lock on a topic.
      */
     @Override
     @DELETE
@@ -1562,8 +1441,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSourceTopicUnlock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var source =
-            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.unlock(), source);
     }
 
@@ -1576,8 +1455,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSourceTopicActivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var source =
-            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.start(), source);
     }
 
@@ -1590,8 +1469,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSourceTopicDeactivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var source =
-            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var source = TopicEndpointManager.getManager()
+            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.stop(), source);
     }
 
@@ -1604,13 +1483,13 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSinkTopicLock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var sink =
-            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.lock(), sink);
     }
 
     /**
-     * DELETEs the lock on a topic.
+     * Deletes the lock on a topic.
      */
     @Override
     @DELETE
@@ -1618,8 +1497,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSinkTopicUnlock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var sink =
-            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.unlock(), sink);
     }
 
@@ -1632,8 +1511,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSinkTopicActivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var sink =
-            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.start(), sink);
     }
 
@@ -1646,21 +1525,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response commSinkTopicDeactivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
-        var sink =
-            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        var sink = TopicEndpointManager.getManager()
+            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.stop(), sink);
-    }
-
-    private Response getResponse(String topicName, boolean success, Topic topic) {
-        if (success) {
-            return Response.status(Status.OK).entity(topic).build();
-        } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(makeTopicOperError(topicName)).build();
-        }
-    }
-
-    private Error makeTopicOperError(String topic) {
-        return new Error("cannot perform operation on " + topic);
     }
 
     /**
@@ -1683,8 +1550,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
             if (source.offer(json)) {
                 return Arrays.asList(source.getRecentEvents());
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))
-                    .build();
+                return errorResponse(NOT_ACCEPTABLE, "Failure to inject event over " + topic);
             }
 
         }, e -> {
@@ -1703,7 +1569,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/uuid")
     @Produces(MediaType.TEXT_PLAIN)
     public Response uuid() {
-        return Response.status(Status.OK).entity(UUID.randomUUID().toString()).build();
+        return Response.status(OK).entity(UUID.randomUUID().toString()).build();
     }
 
     /**
@@ -1716,17 +1582,16 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers")
     public Response loggers() {
         final List<String> names = new ArrayList<>();
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
-            logger.warn("The SLF4J logger factory is not configured for logback");
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(names).build();
+        if (checkLoggerFactoryInstance()) {
+            return Response.status(INTERNAL_SERVER_ERROR).entity(names).build();
         }
 
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        var context = (LoggerContext) LoggerFactory.getILoggerFactory();
         for (final Logger lgr : context.getLoggerList()) {
             names.add(lgr.getName());
         }
 
-        return Response.status(Status.OK).entity(names).build();
+        return Response.status(OK).entity(names).build();
     }
 
     /**
@@ -1739,19 +1604,18 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers/{logger}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loggerName1(@PathParam("logger") String loggerName) {
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
-            logger.warn("The SLF4J logger factory is not configured for logback");
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        if (checkLoggerFactoryInstance()) {
+            return Response.status(INTERNAL_SERVER_ERROR).build();
         }
 
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        var context = (LoggerContext) LoggerFactory.getILoggerFactory();
         var lgr = context.getLogger(loggerName);
         if (lgr == null) {
-            return Response.status(Status.NOT_FOUND).build();
+            return Response.status(NOT_FOUND).build();
         }
 
         final String loggerLevel = (lgr.getLevel() != null) ? lgr.getLevel().toString() : "";
-        return Response.status(Status.OK).entity(loggerLevel).build();
+        return Response.status(OK).entity(loggerLevel).build();
     }
 
     /**
@@ -1768,28 +1632,28 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
 
         String newLevel;
         try {
-            if (!checkValidNameInput(loggerName)) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error("logger name: " + NOT_ACCEPTABLE_MSG))
-                    .build();
+            if (StringUtils.isBlank(loggerName)) {
+                return errorResponse(NOT_ACCEPTABLE, "logger name:" + NOT_ACCEPTABLE_MSG);
             }
             if (!Pattern.matches("^[a-zA-Z]{3,5}$", loggerLevel)) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error("logger level: " + NOT_ACCEPTABLE_MSG))
-                    .build();
+                return errorResponse(NOT_ACCEPTABLE, "logger level:" + NOT_ACCEPTABLE_MSG);
             }
             newLevel = LoggerUtils.setLevel(loggerName, loggerLevel);
-        } catch (final IllegalArgumentException e) {
-            logger.warn("{}: invalid operation for logger {} and level {}", this, loggerName, loggerLevel, e);
-            return Response.status(Status.NOT_FOUND).build();
-        } catch (final IllegalStateException e) {
+        } catch (Exception e) {
             logger.warn("{}: logging framework unavailable for {} / {}", this, loggerName, loggerLevel, e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(INTERNAL_SERVER_ERROR).build();
         }
 
-        return Response.status(Status.OK).entity(newLevel
+        return Response.status(OK).entity(newLevel).build();
+    }
 
-        ).build();
+    protected String getSwaggerContents() {
+        try (InputStream inputStream = getClass().getResourceAsStream(SWAGGER);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+            throw new PolicyDroolsPdpRuntimeException("Cannot read swagger.json", e);
+        }
     }
 
     /**
@@ -1800,7 +1664,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      * @throws IllegalArgumentException if an invalid controller name has been passed in
      */
     protected DroolsController getDroolsController(String controllerName) {
-        final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
+        var controller = PolicyControllerConstants.getFactory().get(controllerName);
         if (controller == null) {
             throw new IllegalArgumentException(controllerName + DOES_NOT_EXIST_MSG);
         }
@@ -1818,37 +1682,88 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      * illegal state, and generic runtime exceptions.
      *
      * @param responder function that will generate a response. If it returns a "Response"
-     *        object, then that object is returned as-is. Otherwise, this method will
-     *        return an "OK" Response, using the function's return value as the "entity"
-     * @param errorMsg function that will generate an error message prefix to be included
-     *        in responses generated as a result of catching an exception
+     *                  object, then that object is returned as-is. Otherwise, this method will
+     *                  return an "OK" Response, using the function's return value as the "entity"
+     * @param errorMsg  function that will generate an error message prefix to be included
+     *                  in responses generated as a result of catching an exception
      * @return a response
      */
-    private Response catchArgStateGenericEx(Supplier<Object> responder, Function<Exception, String> errorMsg) {
+    protected Response catchArgStateGenericEx(Supplier<Object> responder, Function<Exception, String> errorMsg) {
         try {
             Object result = responder.get();
             if (result instanceof Response) {
                 return (Response) result;
             }
 
-            return Response.status(Response.Status.OK).entity(result).build();
+            return Response.status(OK).entity(result).build();
 
         } catch (final IllegalArgumentException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(errorMsg.apply(e) + NOT_FOUND_MSG))
-                .build();
+            return errorResponse(NOT_FOUND, errorMsg.apply(e) + NOT_FOUND_MSG);
 
         } catch (final IllegalStateException e) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                .entity(new Error(errorMsg.apply(e) + NOT_ACCEPTABLE_MSG)).build();
+            return errorResponse(NOT_ACCEPTABLE, errorMsg.apply(e) + NOT_ACCEPTABLE_MSG);
 
         } catch (final RuntimeException e) {
             errorMsg.apply(e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
+            return errorResponse(INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    public static boolean checkValidNameInput(String test) {
-        return Pattern.matches("\\S+", test);
+    protected Object decoderFilterRule2(String controllerName, String topic, String factClass, String rule) {
+        if (StringUtils.isBlank(rule)) {
+            var error = controllerName + ":" + topic + ":" + factClass + " no filter rule provided";
+            return errorResponse(BAD_REQUEST, error);
+        }
+
+        var result = this.checkControllerDecoderAndFilter(controllerName, topic, factClass);
+
+        if (result instanceof Response) {
+            return result;
+        } else {
+            var filter = (JsonProtocolFilter) result;
+            filter.setRule(rule);
+            return filter.getRule();
+        }
+    }
+
+    protected Object checkControllerDecoderAndFilter(String controllerName, String topic, String factClass) {
+        var drools = this.getDroolsController(controllerName);
+        var decoder = EventProtocolCoderConstants.getManager()
+            .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
+
+        var filters = decoder.getCoder(factClass);
+        if (filters == null) {
+            var error = controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG;
+            return errorResponse(BAD_REQUEST, error);
+        }
+
+        var filter = filters.getFilter();
+        if (filter == null) {
+            var error = controllerName + ":" + topic + ":" + factClass + NO_FILTERS;
+            return errorResponse(BAD_REQUEST, error);
+        }
+        return filter;
+    }
+
+    private Response getResponse(String topicName, boolean success, Topic topic) {
+        if (success) {
+            return Response.status(OK).entity(topic).build();
+        } else {
+            return errorResponse(NOT_ACCEPTABLE, "cannot perform operation on " + topicName);
+        }
+    }
+
+    private static boolean checkLoggerFactoryInstance() {
+        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+            logger.warn("The SLF4J logger factory is not configured for logback");
+            return true;
+        }
+        return false;
+    }
+
+    private Response errorResponse(Status status, String errorMessage) {
+        var error = new Error(errorMessage);
+        return Response.status(status).entity(error).build();
     }
 
     /*

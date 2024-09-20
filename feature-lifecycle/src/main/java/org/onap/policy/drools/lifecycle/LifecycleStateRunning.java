@@ -4,7 +4,7 @@
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
- * Modifications Copyright (C) 2021, 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -203,13 +203,15 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
         List<ToscaPolicy> failedUndeployPolicies = undeployPolicies(policies);
         if (!failedUndeployPolicies.isEmpty()) {
-            logger.warn("update-policies: undeployment failures: {}", fsm.getPolicyIdsMessage(failedUndeployPolicies));
+            var failures = fsm.getPolicyIdsMessage(failedUndeployPolicies);
+            logger.warn("update-policies: undeployment failures: {}", failures);
             failedUndeployPolicies.forEach(fsm::failedUndeployPolicyAction);
         }
 
         List<ToscaPolicy> failedDeployPolicies = deployPolicies(policies);
         if (!failedDeployPolicies.isEmpty()) {
-            logger.warn("update-policies: deployment failures: {}", fsm.getPolicyIdsMessage(failedDeployPolicies));
+            var failures = fsm.getPolicyIdsMessage(failedDeployPolicies);
+            logger.warn("update-policies: deployment failures: {}", failures);
             failedDeployPolicies.forEach(fsm::failedDeployPolicyAction);
         }
 
@@ -237,11 +239,15 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         List<ToscaPolicy> preNonNativePolicies = fsm.getNonNativePolicies(preActivePoliciesMap);
         preNonNativePolicies.retainAll(fsm.getNonNativePolicies(activePoliciesByType));
 
+        var nonNativePoliciesIds = fsm.getPolicyIdsMessage(preNonNativePolicies);
+        var activePoliciesIds = fsm.getPolicyIdsMessage(activeNativeArtifactPolicies);
+
         logger.info("re-applying non-native policies {} because new native artifact policies have been found: {}",
-                fsm.getPolicyIdsMessage(preNonNativePolicies), fsm.getPolicyIdsMessage(activeNativeArtifactPolicies));
+            nonNativePoliciesIds, activePoliciesIds);
 
         List<ToscaPolicy> failedPolicies = syncPolicies(preNonNativePolicies, this::deployPolicy);
-        logger.info("re-applying non-native policies failures: {}", fsm.getPolicyIdsMessage(failedPolicies));
+        var failedPoliciesIds = fsm.getPolicyIdsMessage(failedPolicies);
+        logger.info("re-applying non-native policies failures: {}", failedPoliciesIds);
 
         return failedPolicies;
     }
@@ -268,9 +274,11 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         List<ToscaPolicy> preNativeArtifactPolicies = fsm.getNativeArtifactPolicies(preActivePoliciesMap);
         preNativeArtifactPolicies.retainAll(fsm.getNativeArtifactPolicies(activePoliciesByType));
 
+        var candidateIds = fsm.getPolicyIdsMessage(preNativeArtifactPolicies);
+        var activeIds = fsm.getPolicyIdsMessage(activeNativeControllerPolicies);
+
         logger.info("reapply candidate native artifact policies {} as new native controller policies {} were found",
-                fsm.getPolicyIdsMessage(preNativeArtifactPolicies),
-                fsm.getPolicyIdsMessage(activeNativeControllerPolicies));
+            candidateIds, activeIds);
 
         // from the intersection, only need to reapply those for which there is a new native
         // controller policy
@@ -295,12 +303,14 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             }
         }
 
+        var nativeArtPolIds = fsm.getPolicyIdsMessage(preNativeArtifactPoliciesToApply);
+        var newNativeCtrlPolIds = fsm.getPolicyIdsMessage(activeNativeControllerPolicies);
         logger.info("reapply set of native artifact policies {} as new native controller policies {} were found",
-                fsm.getPolicyIdsMessage(preNativeArtifactPoliciesToApply),
-                fsm.getPolicyIdsMessage(activeNativeControllerPolicies));
+            nativeArtPolIds, newNativeCtrlPolIds);
 
         List<ToscaPolicy> failedPolicies = syncPolicies(preNativeArtifactPoliciesToApply, this::deployPolicy);
-        logger.info("re-applying native artifact policies failures: {}", fsm.getPolicyIdsMessage(failedPolicies));
+        var failedIds = fsm.getPolicyIdsMessage(failedPolicies);
+        logger.info("re-applying native artifact policies failures: {}", failedIds);
 
         // since we want non-native policies to be reapplied when a new native artifact policy has been
         // reapplied here, remove it from the preActivePolicies, so it is detected as new.
