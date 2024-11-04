@@ -178,9 +178,9 @@
                                 Properties=java.util.Properties,
                                 ProtocolCoderToolset=org.onap.policy.drools.protocol.coders.ProtocolCoderToolset,
                                 Response=jakarta.ws.rs.core.Response,
-                                TopicEndpoint=org.onap.policy.common.endpoints.event.comm.TopicEndpoint,
-                                TopicSink=org.onap.policy.common.endpoints.event.comm.TopicSink,
-                                TopicSource=org.onap.policy.common.endpoints.event.comm.TopicSource,
+                                TopicEndpoint=org.onap.policy.common.message.bus.event.TopicEndpoint,
+                                TopicSink=org.onap.policy.common.message.bus.event.TopicSink,
+                                TopicSource=org.onap.policy.common.message.bus.event.TopicSource,
                                 ToscaPolicy=org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy
                             </importMappings>
                             <typeMappings>
@@ -212,7 +212,11 @@
             <artifactId>policy-domains</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.onap.policy.common</groupId>
+            <artifactId>message-bus</artifactId>
+            <version>${policy.common.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>policy-endpoints</artifactId>

@@ -22,6 +22,16 @@
 package org.onap.policy.drools.server.restful.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.onap.policy.common.endpoints.properties.PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX;
+import static org.onap.policy.common.endpoints.properties.PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX;
+import static org.onap.policy.common.endpoints.properties.PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX;
+import static org.onap.policy.common.endpoints.properties.PolicyEndPointProperties.PROPERTY_HTTP_SERIALIZATION_PROVIDER;
+import static org.onap.policy.common.endpoints.properties.PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SOURCE_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SOURCE_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,10 +59,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.http.server.YamlJacksonHandler;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.JacksonHandler;
+import org.onap.policy.common.message.bus.event.TopicEndpointManager;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
@@ -71,10 +80,10 @@ public class RestManagerTest {
     private static final String FOO_CONTROLLER = "foo";
     private static final String KAFKA_TOPIC = "kafka-topic-test";
     private static final String NOOP_TOPIC = "noop_topic";
-    private static final String KAFKA_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS
-        + "." + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
-    private static final String KAFKA_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + "."
-        + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String KAFKA_SOURCE_SERVER_PROPERTY = PROPERTY_KAFKA_SOURCE_TOPICS
+        + "." + KAFKA_TOPIC + PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String KAFKA_SINK_SERVER_PROPERTY = PROPERTY_KAFKA_SINK_TOPICS + "."
+        + KAFKA_TOPIC + PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String KAFKA_SERVER = "localhost:9092";
 
     private static final String FOO_CONTROLLER_FILE = FOO_CONTROLLER + "-controller.properties";
@@ -99,25 +108,25 @@ public class RestManagerTest {
 
         /* override default port */
         final Properties engineProps = PolicyEngineConstants.getManager().defaultTelemetryConfig();
-        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+        engineProps.put(PROPERTY_HTTP_SERVER_SERVICES + "."
             + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
-            + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+            + PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
+        engineProps.put(PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
+                + PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
             TELEMETRY_USER);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+        engineProps.put(PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
+                + PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
             TELEMETRY_PASSWORD);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+        engineProps.put(PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_HTTP_SERIALIZATION_PROVIDER,
+                + PROPERTY_HTTP_SERIALIZATION_PROVIDER,
             String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
 
         /* other properties */
-        engineProps.put(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS, KAFKA_TOPIC);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS, KAFKA_TOPIC);
+        engineProps.put(PROPERTY_KAFKA_SOURCE_TOPICS, KAFKA_TOPIC);
+        engineProps.put(PROPERTY_KAFKA_SINK_TOPICS, KAFKA_TOPIC);
         engineProps.put(KAFKA_SOURCE_SERVER_PROPERTY, KAFKA_SERVER);
         engineProps.put(KAFKA_SINK_SERVER_PROPERTY, KAFKA_SERVER);
 
@@ -138,8 +147,8 @@ public class RestManagerTest {
         }
 
         Properties noopProperties = new Properties();
-        noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, NOOP_TOPIC);
-        noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+        noopProperties.put(PROPERTY_NOOP_SOURCE_TOPICS, NOOP_TOPIC);
+        noopProperties.put(PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
         TopicEndpointManager.getManager().addTopics(noopProperties);
     }
 
@@ -204,12 +213,12 @@ public class RestManagerTest {
         putTest(HOST_URL + "/engine/topics/sources/noop/" + NOOP_TOPIC + "/events", 200,
             "{x:y}", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC + "/events", 200,
-                "FOOOO", ContentType.TEXT_PLAIN);
+            "FOOOO", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/kafka/fiznits/events", 406,
-                "FOOOO", ContentType.TEXT_PLAIN);
+            "FOOOO", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/switches/lock", 200);
         putTest(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC + "/events",
-                406, "FOOOO", ContentType.TEXT_PLAIN);
+            406, "FOOOO", ContentType.TEXT_PLAIN);
         deleteTest(HOST_URL + "/engine/topics/switches/lock", 200);
     }
 

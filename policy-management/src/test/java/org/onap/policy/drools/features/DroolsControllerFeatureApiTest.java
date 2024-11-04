@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Collections;
 import java.util.Properties;
 import org.junit.jupiter.api.Test;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.message.bus.event.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
 
 /**

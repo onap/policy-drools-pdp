@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.onap.policy.common.endpoints.event.comm.Topic;
-import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
+import org.onap.policy.common.message.bus.event.Topic;
+import org.onap.policy.common.message.bus.event.noop.NoopTopicFactories;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 
 class LegacyConfigTest {

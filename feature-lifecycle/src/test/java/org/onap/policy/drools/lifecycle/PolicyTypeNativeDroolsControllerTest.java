@@ -27,13 +27,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SOURCE_TOPICS;
 
 import java.io.IOException;
 import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.message.bus.event.TopicEndpointManager;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.server.restful.TestConstants;
@@ -81,8 +82,8 @@ class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
             () -> PolicyControllerConstants.getFactory().get(controllerPolicy.getName()));
 
         Properties noopTopicProperties = new Properties();
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, TestConstants.DCAE_TOPIC);
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, TestConstants.APPC_CL_TOPIC);
+        noopTopicProperties.put(PROPERTY_NOOP_SOURCE_TOPICS, TestConstants.DCAE_TOPIC);
+        noopTopicProperties.put(PROPERTY_NOOP_SINK_TOPICS, TestConstants.APPC_CL_TOPIC);
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         assertTrue(controller.deploy(policy));
@@ -95,11 +96,11 @@ class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
         Properties noopTopicProperties = new Properties();
         String noopSources = String.join(",", TestConstants.DCAE_TOPIC, TestConstants.APPC_CL_TOPIC,
             TestConstants.APPC_LCM_WRITE_TOPIC, TestConstants.SDNR_CL_RSP_TOPIC);
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, noopSources);
+        noopTopicProperties.put(PROPERTY_NOOP_SOURCE_TOPICS, noopSources);
 
         String noopSinks = String.join(",", TestConstants.APPC_CL_TOPIC, TestConstants.APPC_LCM_READ_TOPIC,
             TestConstants.POLICY_CL_MGT_TOPIC, TestConstants.DCAE_CL_RSP_TOPIC);
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, noopSinks);
+        noopTopicProperties.put(PROPERTY_NOOP_SINK_TOPICS, noopSinks);
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         ToscaPolicy nativeControllerPolicy =

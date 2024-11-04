@@ -26,11 +26,11 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicListener;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.TopicListener;
+import org.onap.policy.common.message.bus.event.TopicSink;
+import org.onap.policy.common.message.bus.event.TopicSource;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -314,9 +314,9 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException      when invalid or insufficient properties are provided
      * @throws IllegalStateException         when the engine is in a state where this operation is not
-     *                                       permitted (ie. locked or stopped).
+     *                                       permitted (i.e. locked or stopped).
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
-     *                                       missing (ie. communication infrastructure not supported.
+     *                                       missing (i.e. communication infrastructure not supported).
      */
     boolean deliver(CommInfrastructure busType, String topic, String event);
 

@@ -35,6 +35,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
+import static org.onap.policy.drools.system.PolicyEngineConstants.PROPERTY_TOPIC_EVENTS_SUFFIX;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,9 +51,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.message.bus.event.TopicEndpointManager;
+import org.onap.policy.common.message.bus.event.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.internal.MavenDroolsControllerTest;
@@ -296,7 +297,7 @@ public class ProtocolCoderToolsetTest {
         }
 
         Properties sinkConfig = new Properties();
-        sinkConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
+        sinkConfig.put(PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
         final List<TopicSink> noopTopics = TopicEndpointManager.getManager().addTopicSinks(sinkConfig);
 
         Properties droolsControllerConfig = getDroolsControllerConfig();
@@ -310,8 +311,8 @@ public class ProtocolCoderToolsetTest {
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_ARTIFACTID, releaseId.getArtifactId());
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_VERSION, releaseId.getVersion());
         droolsControllerConfig.put(
-            PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
-                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX,
+            PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
+                + PROPERTY_TOPIC_EVENTS_SUFFIX,
             ThreeStrings.class.getName());
         return droolsControllerConfig;
     }

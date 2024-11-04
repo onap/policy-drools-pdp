@@ -3,7 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Properties;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.TopicSink;
+import org.onap.policy.common.message.bus.event.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
@@ -94,9 +94,9 @@ public interface PolicyController extends Startable, Lockable {
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
      * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted (ie. locked or stopped).
+     *         permitted (i.e. locked or stopped).
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
-     *         missing (ie. communication infrastructure not supported.
+     *         missing (i.e. communication infrastructure not supported).
      */
     boolean deliver(CommInfrastructure busType, String topic, Object event);
 
