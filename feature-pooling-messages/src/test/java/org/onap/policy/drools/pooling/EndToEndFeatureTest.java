@@ -27,6 +27,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SOURCE_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_MANAGED_SUFFIX;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 
 import com.google.gson.Gson;
@@ -50,12 +57,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
-import org.onap.policy.common.endpoints.event.comm.TopicListener;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.TopicEndpointManager;
+import org.onap.policy.common.message.bus.event.TopicListener;
+import org.onap.policy.common.message.bus.event.TopicSink;
+import org.onap.policy.common.message.bus.event.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
@@ -237,14 +243,14 @@ public class EndToEndFeatureTest {
     private static Properties makeSinkProperties(String topic) {
         Properties props = new Properties();
 
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS, topic);
+        props.setProperty(PROPERTY_KAFKA_SINK_TOPICS, topic);
 
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, SERVER);
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "false");
+        props.setProperty(PROPERTY_KAFKA_SINK_TOPICS + "." + topic
+                + PROPERTY_TOPIC_SERVERS_SUFFIX, SERVER);
+        props.setProperty(PROPERTY_KAFKA_SINK_TOPICS + "." + topic
+                + PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
+        props.setProperty(PROPERTY_KAFKA_SINK_TOPICS + "." + topic
+                + PROPERTY_MANAGED_SUFFIX, "false");
 
         return props;
     }
@@ -252,19 +258,19 @@ public class EndToEndFeatureTest {
     private static Properties makeSourceProperties(String topic) {
         Properties props = new Properties();
 
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS, topic);
+        props.setProperty(PROPERTY_KAFKA_SOURCE_TOPICS, topic);
 
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, SERVER);
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
-        props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "false");
+        props.setProperty(PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
+                + PROPERTY_TOPIC_SERVERS_SUFFIX, SERVER);
+        props.setProperty(PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
+                + PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
+        props.setProperty(PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
+                + PROPERTY_MANAGED_SUFFIX, "false");
 
         if (EXTERNAL_TOPIC.equals(topic)) {
             // consumer group is a constant
-            props.setProperty(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
-                    + PolicyEndPointProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX, EXTERNAL_GROUP);
+            props.setProperty(PROPERTY_KAFKA_SOURCE_TOPICS + "." + topic
+                    + PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX, EXTERNAL_GROUP);
 
             // consumer instance is generated by the BusConsumer code
         }

@@ -22,7 +22,7 @@
 package org.onap.policy.drools.features;
 
 import java.util.Properties;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
@@ -169,7 +169,7 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise..
+     *     lower priority features.   False, otherwise.
      */
     default boolean afterLock(PolicyController controller) {
         return false;
@@ -202,7 +202,7 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise..
+     *     lower priority features.   False, otherwise.
      */
     default boolean beforeShutdown(PolicyController controller) {
         return false;
@@ -224,7 +224,7 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise..
+     *     lower priority features.   False, otherwise.
      */
     default boolean beforeHalt(PolicyController controller) {
         return false;

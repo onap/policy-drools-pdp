@@ -22,7 +22,7 @@ package org.onap.policy.drools.features;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure.NOOP;
+import static org.onap.policy.common.message.bus.event.Topic.CommInfrastructure.NOOP;
 
 import java.util.Properties;
 import org.junit.jupiter.api.Test;

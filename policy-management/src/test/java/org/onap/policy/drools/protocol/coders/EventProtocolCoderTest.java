@@ -24,13 +24,13 @@ package org.onap.policy.drools.protocol.coders;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
 
 import java.util.Properties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.message.bus.event.TopicEndpointManager;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
 /**
@@ -71,7 +71,7 @@ class EventProtocolCoderTest {
     void test() {
 
         final Properties noopSinkProperties = new Properties();
-        noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+        noopSinkProperties.put(PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
         TopicEndpointManager.getManager().addTopicSinks(noopSinkProperties);
 
@@ -93,7 +93,7 @@ class EventProtocolCoderTest {
     @Test
     void test_extra() {
         final Properties noopSinkProperties = new Properties();
-        noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+        noopSinkProperties.put(PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
         TopicEndpointManager.getManager().addTopicSinks(noopSinkProperties);
 

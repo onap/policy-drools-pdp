@@ -28,8 +28,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.TopicListener;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
@@ -419,8 +419,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * @param topic2 topic
      * @param event event, as an object
      * @param eventHashCode event's hash code
-     * @return {@code true} if the event was handled, {@code false} if the invoker should
-     *         handle it
+     * @return {@code true} if the event was handled, {@code false} if the invoker should handle it
      */
     private boolean handleExternal(String topic2, Object event, int eventHashCode) {
         if (assignments == null) {
@@ -436,7 +435,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     }
 
     /**
-     * Handles a {@link Forward} event, possibly forwarding it again.
+     * Handles a forward event, possibly forwarding it again.
      *
      * @param topic2 topic
      * @param event event, as an object

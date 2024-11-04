@@ -22,7 +22,7 @@
 package org.onap.policy.drools.features;
 
 import java.util.Properties;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;

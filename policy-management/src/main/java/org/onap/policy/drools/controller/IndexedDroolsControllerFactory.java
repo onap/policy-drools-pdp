@@ -21,6 +21,14 @@
 
 package org.onap.policy.drools.controller;
 
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_KAFKA_SOURCE_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
+import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SOURCE_TOPICS;
+import static org.onap.policy.drools.system.PolicyEngineConstants.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX;
+import static org.onap.policy.drools.system.PolicyEngineConstants.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX;
+import static org.onap.policy.drools.system.PolicyEngineConstants.PROPERTY_TOPIC_EVENTS_SUFFIX;
+
 import com.google.re2j.Pattern;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,11 +37,10 @@ import java.util.Map;
 import java.util.Properties;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import org.onap.policy.common.endpoints.event.comm.Topic;
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.message.bus.event.Topic;
+import org.onap.policy.common.message.bus.event.Topic.CommInfrastructure;
+import org.onap.policy.common.message.bus.event.TopicSink;
+import org.onap.policy.common.message.bus.event.TopicSource;
 import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
@@ -82,7 +89,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     @Override
     public DroolsController build(Properties properties, List<? extends TopicSource> eventSources,
-            List<? extends TopicSink> eventSinks) throws LinkageError {
+                                  List<? extends TopicSink> eventSinks) throws LinkageError {
 
         String groupId = properties.getProperty(DroolsPropertyConstants.RULES_GROUPID);
         if (StringUtils.isBlank(groupId)) {
@@ -103,13 +110,13 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
 
         return this.build(properties, groupId, artifactId, version,
-                topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+            topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
     }
 
     @Override
     public DroolsController build(Properties properties, String newGroupId, String newArtifactId, String newVersion,
-            List<TopicCoderFilterConfiguration> decoderConfigurations,
-            List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError {
+                                  List<TopicCoderFilterConfiguration> decoderConfigurations,
+                                  List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError {
 
         if (StringUtils.isBlank(newGroupId)) {
             throw new IllegalArgumentException("Missing maven group-id coordinate");
@@ -147,7 +154,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
              */
 
             controllerCopy.updateToVersion(newGroupId, newArtifactId, newVersion, decoderConfigurations,
-                    encoderConfigurations);
+                encoderConfigurations);
 
             return controllerCopy;
         }
@@ -155,11 +162,11 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         /* new drools controller */
 
         DroolsController controller = applyBeforeInstance(properties, newGroupId, newArtifactId, newVersion,
-                        decoderConfigurations, encoderConfigurations);
+            decoderConfigurations, encoderConfigurations);
 
         if (controller == null) {
             controller = new MavenDroolsController(newGroupId, newArtifactId, newVersion, decoderConfigurations,
-                    encoderConfigurations);
+                encoderConfigurations);
         }
 
         synchronized (this) {
@@ -171,31 +178,32 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterInstance(controllerFinal, properties),
             (feature, ex) -> logger.error("feature {} ({}) afterInstance() of drools controller {}:{}:{} failed",
-                            feature.getName(), feature.getSequenceNumber(),
-                            newGroupId, newArtifactId, newVersion, ex));
+                feature.getName(), feature.getSequenceNumber(),
+                newGroupId, newArtifactId, newVersion, ex));
 
         return controller;
     }
 
     private DroolsController applyBeforeInstance(Properties properties, String newGroupId, String newArtifactId,
-                    String newVersion, List<TopicCoderFilterConfiguration> decoderConfigurations,
-                    List<TopicCoderFilterConfiguration> encoderConfigurations) {
+                                                 String newVersion,
+                                                 List<TopicCoderFilterConfiguration> decoderConfigurations,
+                                                 List<TopicCoderFilterConfiguration> encoderConfigurations) {
         DroolsController controller = null;
-        for (DroolsControllerFeatureApi feature: getProviders()) {
+        for (DroolsControllerFeatureApi feature : getProviders()) {
             try {
                 controller = feature.beforeInstance(properties,
-                        newGroupId, newArtifactId, newVersion,
-                        decoderConfigurations, encoderConfigurations);
+                    newGroupId, newArtifactId, newVersion,
+                    decoderConfigurations, encoderConfigurations);
                 if (controller != null) {
                     logger.info("feature {} ({}) beforeInstance() has intercepted drools controller {}:{}:{}",
-                            feature.getName(), feature.getSequenceNumber(),
-                            newGroupId, newArtifactId, newVersion);
+                        feature.getName(), feature.getSequenceNumber(),
+                        newGroupId, newArtifactId, newVersion);
                     break;
                 }
             } catch (RuntimeException r) {
                 logger.error("feature {} ({}) beforeInstance() of drools controller {}:{}:{} failed",
-                        feature.getName(), feature.getSequenceNumber(),
-                        newGroupId, newArtifactId, newVersion, r);
+                    feature.getName(), feature.getSequenceNumber(),
+                    newGroupId, newArtifactId, newVersion, r);
             }
         }
         return controller;
@@ -208,14 +216,13 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     /**
      * find out decoder classes and filters.
      *
-     * @param properties properties with information about decoders
+     * @param properties    properties with information about decoders
      * @param topicEntities topic sources
-     * @return list of topics, each with associated decoder classes, each with a list of associated
-     *         filters
+     * @return list of topics, each with associated decoder classes, each with a list of associated filters
      * @throws IllegalArgumentException invalid input data
      */
     protected List<TopicCoderFilterConfiguration> codersAndFilters(Properties properties,
-            List<? extends Topic> topicEntities) {
+                                                                   List<? extends Topic> topicEntities) {
 
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = new ArrayList<>();
 
@@ -239,7 +246,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             // 3. second the list of classes associated with each topic
 
             String eventClasses = properties
-                    .getProperty(propertyTopicEntityPrefix + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
+                .getProperty(propertyTopicEntityPrefix + PROPERTY_TOPIC_EVENTS_SUFFIX);
 
             if (StringUtils.isBlank(eventClasses)) {
                 logger.warn("There are no event classes for topic {}", firstTopic);
@@ -247,10 +254,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             }
 
             List<PotentialCoderFilter> classes2Filters =
-                            getFilterExpressions(properties, propertyTopicEntityPrefix, eventClasses);
+                getFilterExpressions(properties, propertyTopicEntityPrefix, eventClasses);
 
             topics2DecodedClasses2Filters
-                    .add(new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder));
+                .add(new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder));
         }
 
         return topics2DecodedClasses2Filters;
@@ -261,15 +268,15 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         var commInfra = topic.getTopicCommInfrastructure();
         if (commInfra == CommInfrastructure.NOOP) {
             if (isSource) {
-                return PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS + ".";
+                return PROPERTY_NOOP_SOURCE_TOPICS + ".";
             } else {
-                return PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
+                return PROPERTY_NOOP_SINK_TOPICS + ".";
             }
         } else if (commInfra == CommInfrastructure.KAFKA) {
             if (isSource) {
-                return PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + ".";
+                return PROPERTY_KAFKA_SOURCE_TOPICS + ".";
             } else {
-                return PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + ".";
+                return PROPERTY_KAFKA_SINK_TOPICS + ".";
             }
         } else {
             throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
@@ -278,7 +285,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     private CustomGsonCoder getCustomCoder(Properties properties, String propertyPrefix) {
         String customGson = properties.getProperty(propertyPrefix
-                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
+            + PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
 
         CustomGsonCoder customGsonCoder = null;
         if (StringUtils.isNotBlank(customGson)) {
@@ -286,14 +293,14 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                 customGsonCoder = new CustomGsonCoder(customGson);
             } catch (IllegalArgumentException e) {
                 logger.warn("{}: cannot create custom-gson-coder {} because of {}", this, customGson,
-                        e.getMessage(), e);
+                    e.getMessage(), e);
             }
         }
         return customGsonCoder;
     }
 
     private List<PotentialCoderFilter> getFilterExpressions(Properties properties, String propertyPrefix,
-                    @NonNull String eventClasses) {
+                                                            @NonNull String eventClasses) {
 
         List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
         for (String theClass : COMMA_SPACE_PAT.split(eventClasses)) {
@@ -301,9 +308,9 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             // 4. for each coder class, get the filter expression
 
             String filter = properties
-                    .getProperty(propertyPrefix
-                            + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
-                            + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
+                .getProperty(propertyPrefix
+                    + PROPERTY_TOPIC_EVENTS_SUFFIX
+                    + "." + theClass + PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
 
             var class2Filters = new PotentialCoderFilter(theClass, new JsonProtocolFilter(filter));
             classes2Filters.add(class2Filters);

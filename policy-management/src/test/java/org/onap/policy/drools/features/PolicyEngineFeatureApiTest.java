@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Properties;
 import org.junit.jupiter.api.Test;
-import org.onap.policy.common.endpoints.event.comm.Topic;
+import org.onap.policy.common.message.bus.event.Topic;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyEngine;
