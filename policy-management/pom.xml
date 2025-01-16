@@ -4,7 +4,7 @@
   ONAP Policy Engine - Drools PDP
   ================================================================================
   Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
-  Modifications Copyright (C) 2020, 2023-2024 Nordix Foundation.
+  Modifications Copyright (C) 2020, 2023-2025 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -297,11 +297,6 @@
         The following dependencies are for features and drools
         applications usage
         -->
-
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
