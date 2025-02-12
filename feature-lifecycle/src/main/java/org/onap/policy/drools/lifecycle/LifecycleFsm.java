@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021, 2023-2024 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023-2025 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  * ============LICENSE_END=========================================================
  */
 
 package org.onap.policy.drools.lifecycle;
 
 import com.google.re2j.Pattern;
-import io.prometheus.client.Counter;
+import io.prometheus.metrics.core.metrics.Counter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -102,7 +104,8 @@ public class LifecycleFsm implements Startable {
     protected static final String PROMETHEUS_NAMESPACE = "pdpd";
 
     protected static final Counter deploymentsCounter =
-            Counter.build().namespace(PROMETHEUS_NAMESPACE).name(PrometheusUtils.POLICY_DEPLOYMENTS_METRIC)
+            Counter.builder()
+                    .name(PROMETHEUS_NAMESPACE + "_" + PrometheusUtils.POLICY_DEPLOYMENTS_METRIC)
                     .labelNames(PrometheusUtils.STATE_METRIC_LABEL,
                             PrometheusUtils.OPERATION_METRIC_LABEL,
                             PrometheusUtils.STATUS_METRIC_LABEL)
@@ -448,7 +451,7 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfAbsent(policy.getIdentifier(), key -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
-            deploymentsCounter.labels(state.state().name(),
+            deploymentsCounter.labelValues(state.state().name(),
                     PrometheusUtils.DEPLOY_OPERATION,
                     PdpResponseStatus.SUCCESS.name()).inc();
             return policy;
@@ -459,7 +462,7 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfPresent(policy.getIdentifier(), (key, value) -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
-            deploymentsCounter.labels(state.state().name(),
+            deploymentsCounter.labelValues(state.state().name(),
                     PrometheusUtils.UNDEPLOY_OPERATION,
                     PdpResponseStatus.SUCCESS.name()).inc();
             return null;
@@ -467,13 +470,13 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void failedDeployPolicyAction(@NonNull ToscaPolicy failedPolicy) {    // NOSONAR
-        deploymentsCounter.labels(state.state().name(),
+        deploymentsCounter.labelValues(state.state().name(),
                 PrometheusUtils.DEPLOY_OPERATION,
                 PdpResponseStatus.FAIL.name()).inc();
     }
 
     protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
-        deploymentsCounter.labels(state.state().name(),
+        deploymentsCounter.labelValues(state.state().name(),
                 PrometheusUtils.UNDEPLOY_OPERATION,
                 PdpResponseStatus.FAIL.name()).inc();
         policiesMap.remove(failedPolicy.getIdentifier());
