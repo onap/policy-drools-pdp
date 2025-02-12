@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  * ============LICENSE_END=========================================================
  */
 
@@ -27,7 +29,7 @@ import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERV
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.prometheus.client.Summary;
+import io.prometheus.metrics.core.metrics.Summary;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -198,8 +200,9 @@ public class PolicyEngineManager implements PolicyEngine {
     protected static final String POLICY_LABEL = "policy";
 
     protected static final Summary transLatencySecsSummary =
-            Summary.build().namespace(PrometheusUtils.PdpType.PDPD.getNamespace())
-                    .name(PrometheusUtils.POLICY_EXECUTIONS_LATENCY_SECONDS_METRIC)
+            Summary.builder()
+                    .name(PrometheusUtils.PdpType.PDPD.getNamespace() + "_"
+                        + PrometheusUtils.POLICY_EXECUTIONS_LATENCY_SECONDS_METRIC)
                     .labelNames(CONTROLLER_LABEL,
                             CONTROLLOOP_NAME_LABEL,
                             POLICY_LABEL,
@@ -312,7 +315,7 @@ public class PolicyEngineManager implements PolicyEngine {
         }
 
         transLatencySecsSummary
-            .labels(controllerName,
+            .labelValues(controllerName,
                     controlLoopName,
                     policyName,
                     transaction.isSuccess() ? PdpResponseStatus.SUCCESS.name() : PdpResponseStatus.FAIL.name())

@@ -1,7 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2022, 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2022, 2024-2025 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  * ============LICENSE_END=========================================================
  */
 
@@ -89,11 +91,11 @@ public class RestLifecycleManagerTest {
         "policies/vCPE.policy.operational.input.tosca.json";
 
     public static final String PROM_DEPLOY_REQUESTS_TOTAL_UNDEPLOY_ACCEPTED =
-        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"undeploy\",status=\"SUCCESS\",}";
+        "pdpd_policy_deployments_total{operation=\"undeploy\",state=\"ACTIVE\",status=\"SUCCESS\"}";
     public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_ACCEPTED =
-        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"SUCCESS\",}";
+        "pdpd_policy_deployments_total{operation=\"deploy\",state=\"ACTIVE\",status=\"SUCCESS\"}";
     public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_DECLINED =
-        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"FAIL\",}";
+        "pdpd_policy_deployments_total{operation=\"deploy\",state=\"ACTIVE\",status=\"FAIL\"}";
 
     private static final StandardCoder coder = new StandardCoder();
     private static final ControllerSupport controllerSupport = new ControllerSupport("lifecycle");

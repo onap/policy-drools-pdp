@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023-2024 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2025 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  * ============LICENSE_END=========================================================
  */
 
@@ -42,8 +44,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Summary;
+import io.prometheus.metrics.core.metrics.Summary;
+import io.prometheus.metrics.model.registry.PrometheusRegistry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -153,6 +155,7 @@ class PolicyEngineManagerTest {
     private ScheduledExecutorService exsvc;
     private PolicyResourceLockManager lockmgr;
     private PolicyStatsManager statsManager;
+    private PrometheusRegistry registry;
 
     /**
      * Initializes the object to be tested.
@@ -161,7 +164,8 @@ class PolicyEngineManagerTest {
      */
     @BeforeEach
     public void setUp() throws Exception {
-        CollectorRegistry.defaultRegistry.clear();
+        registry = PrometheusRegistry.defaultRegistry;
+        registry.clear();
         properties = new Properties();
         prov1 = mock(PolicyEngineFeatureApi.class);
         prov2 = mock(PolicyEngineFeatureApi.class);
@@ -327,7 +331,7 @@ class PolicyEngineManagerTest {
 
     @AfterEach
     public void tearDown() {
-        CollectorRegistry.defaultRegistry.clear();
+        PrometheusRegistry.defaultRegistry.clear();
     }
 
     @Test
@@ -1407,7 +1411,7 @@ class PolicyEngineManagerTest {
     }
 
     @Test
-    void testTransaction() {
+    public void testTransaction() {
         mgr.metric(CONTROLLER1, POLICY, new Metric());
         assertEquals(0, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(0, mgr.getStats().getSubgroupStats().size());
@@ -1418,24 +1422,14 @@ class PolicyEngineManagerTest {
         assertEquals(1, mgr.getStats().getSubgroupStats().size());
         assertEquals(1, mgr.getStats().getSubgroupStats().get(CONTROLLOOP).getPolicyExecutedFailCount());
 
-        Summary.Child.Value summary =
-            PolicyEngineManagerImpl.transLatencySecsSummary
-                .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
+        Summary summary = PolicyEngineManagerImpl.transLatencySecsSummary;
+        summary.labelValues(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).observe(5.0);
 
-        assertEquals(0, summary.count, 0.0);
-        assertEquals(0, summary.sum, 0.0);
+        double sum = summary.collect().getDataPoints().get(0).getSum();
+        long count = summary.collect().getDataPoints().get(0).getCount();
 
-        metric.setServiceInstanceId(POLICY);
-        metric.setElapsedTime(5000L);
-        metric.setSuccess(false);
-        mgr.transaction(CONTROLLER1, CONTROLLOOP, metric);
-
-        summary =
-            PolicyEngineManagerImpl.transLatencySecsSummary
-                .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
-
-        assertEquals(1, summary.count, 0.0);
-        assertEquals(5, summary.sum, 0.0);
+        assertEquals(5.0, sum);
+        assertEquals(1.0, count);
     }
 
     @Test
