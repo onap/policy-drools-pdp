@@ -4,7 +4,7 @@
   ONAP Policy Engine - Drools PDP
   ================================================================================
   Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
-  Modifications Copyright (C) 2020, 2023-2024 Nordix Foundation.
+  Modifications Copyright (C) 2020, 2023-2025 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+  SPDX-License-Identifier: Apache-2.0
   ============LICENSE_END=========================================================
 -->
 
@@ -27,7 +29,7 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>5.1.1</version>
         <relativePath />
     </parent>
 
@@ -50,8 +52,8 @@
         <!-- Project common dependency versions -->
         <hibernate.commons.annotations.version>6.0.6.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <policy.common.version>3.1.1-SNAPSHOT</policy.common.version>
-        <policy.models.version>4.1.1-SNAPSHOT</policy.models.version>
+        <policy.common.version>3.1.1</policy.common.version>
+        <policy.models.version>4.1.1</policy.models.version>
     </properties>
 
     <modules>
