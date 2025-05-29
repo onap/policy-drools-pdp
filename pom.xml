@@ -29,13 +29,13 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>5.1.3-SNAPSHOT</version>
+        <version>5.2.0-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <groupId>org.onap.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>policy-drools-pdp</name>
 
@@ -52,8 +52,8 @@
         <!-- Project common dependency versions -->
         <hibernate.commons.annotations.version>6.0.6.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <policy.common.version>3.1.3-SNAPSHOT</policy.common.version>
-        <policy.models.version>4.1.3-SNAPSHOT</policy.models.version>
+        <policy.common.version>3.2.0-SNAPSHOT</policy.common.version>
+        <policy.models.version>4.2.0-SNAPSHOT</policy.models.version>
     </properties>
 
     <modules>
