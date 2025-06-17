@@ -53,9 +53,7 @@ ENV http_proxy $http_proxy
 USER root
 RUN apk update && \
     apk add --no-cache file maven \
-    net-tools netcat-openbsd sudo less vim openssl \
-    && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
-    && python3 -m pip install --no-cache-dir httpie
+    net-tools netcat-openbsd sudo less vim openssl
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
     chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
