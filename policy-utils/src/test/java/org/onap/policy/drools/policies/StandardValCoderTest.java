@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
- *  Modifications Copyright (C) 2024 Nordix Foundation
+ *  Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ class StandardValCoderTest {
     }
 
     @BeforeEach
-    public void testSetUp() {
+    void testSetUp() {
         jsonSchema = getJson("src/test/resources/coder/test.schema.json");
         validJson = getJson("src/test/resources/coder/valid.json");
         missingReqJson = getJson("src/test/resources/coder/missing-required.json");

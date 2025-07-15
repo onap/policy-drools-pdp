@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import org.onap.policy.drools.properties.DroolsPropertyConstants;
  * (File) System Persistence Tests.
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class SystemPersistenceTest {
+class SystemPersistenceTest {
     /**
      * sample configuration dir.
      */
@@ -126,12 +126,12 @@ public class SystemPersistenceTest {
     private static final String SYSTEM_PROPS_FILE =  SYSTEM_PROPS + "-system.properties";
 
     @BeforeAll
-    public static void setUp() throws IOException {
+    static void setUp() throws IOException {
         cleanUpWorkingDirs();
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
+    static void tearDown() throws IOException {
         cleanUpWorkingDirs();
     }
 

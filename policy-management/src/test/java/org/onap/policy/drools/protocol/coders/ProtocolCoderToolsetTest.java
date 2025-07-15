@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public class ProtocolCoderToolsetTest {
      * Test Class Initialization.
      */
     @BeforeAll
-    public static void setUpClass() throws IOException {
+    static void setUpClass() throws IOException {
         releaseId = KieUtils.installArtifact(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
             Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
             MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
@@ -96,7 +96,7 @@ public class ProtocolCoderToolsetTest {
      * Test Set Up.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         controller = createController();
     }
 
@@ -104,7 +104,7 @@ public class ProtocolCoderToolsetTest {
      * Test Termination.
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (controller != null) {
             DroolsControllerConstants.getFactory().destroy(controller);
         }

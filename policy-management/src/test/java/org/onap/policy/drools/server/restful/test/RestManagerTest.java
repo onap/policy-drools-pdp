@@ -3,7 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class RestManagerTest {
+class RestManagerTest {
     private static final int DEFAULT_TELEMETRY_PORT = 7887;
     private static final String HOST = "localhost";
     private static final String REST_MANAGER_PATH = "/policy/pdp";
@@ -101,7 +101,7 @@ public class RestManagerTest {
      * @throws IOException throws an IO exception
      */
     @BeforeAll
-    public static void setUp() throws IOException, InterruptedException {
+    static void setUp() throws IOException, InterruptedException {
         cleanUpWorkingDirs();
 
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
@@ -158,7 +158,7 @@ public class RestManagerTest {
      * @throws IOException IO exception
      */
     @AfterAll
-    public static void tearDown() throws IOException {
+    static void tearDown() throws IOException {
         try {
             client.close();
         } catch (IOException ex) {

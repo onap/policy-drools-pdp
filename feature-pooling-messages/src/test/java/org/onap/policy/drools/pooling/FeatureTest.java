@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2020, 2024 Nordix Foundation
+ * Modifications Copyright (C) 2020, 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ class FeatureTest {
      */
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ctx = null;
     }
 
@@ -128,7 +128,7 @@ class FeatureTest {
      */
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (ctx != null) {
             ctx.destroy();
         }
@@ -269,7 +269,7 @@ class FeatureTest {
          */
 
         public void startHosts() {
-            hosts.forEach(host -> host.start());
+            hosts.forEach(Host::start);
         }
 
         /**
@@ -277,7 +277,7 @@ class FeatureTest {
          */
 
         public void stopHosts() {
-            hosts.forEach(host -> host.stop());
+            hosts.forEach(Host::stop);
         }
 
         /**

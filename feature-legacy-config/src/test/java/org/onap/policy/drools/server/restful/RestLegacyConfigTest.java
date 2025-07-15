@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.onap.policy.drools.legacy.config.LegacyConfigFeature;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 
-public class RestLegacyConfigTest {
+class RestLegacyConfigTest {
 
     private static HttpClient client;
 
@@ -47,7 +47,7 @@ public class RestLegacyConfigTest {
      * Set up.
      */
     @BeforeAll
-    public static void setUp() throws Exception {
+    static void setUp() throws Exception {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
         HttpServletServerFactoryInstance.getServerFactory().destroy();
@@ -81,7 +81,7 @@ public class RestLegacyConfigTest {
      * Tear down.
      */
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         LegacyConfigFeature.getLegacyConfig().shutdown();
         HttpClientFactoryInstance.getClientFactory().destroy();
         HttpServletServerFactoryInstance.getServerFactory().destroy();

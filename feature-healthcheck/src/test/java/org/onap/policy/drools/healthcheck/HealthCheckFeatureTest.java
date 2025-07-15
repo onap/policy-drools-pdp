@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019,2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ import org.onap.policy.drools.util.KieUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HealthCheckFeatureTest {
+class HealthCheckFeatureTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HealthCheckFeatureTest.class);
     private static final String EXPECTED = "expected exception";
@@ -68,7 +68,7 @@ public class HealthCheckFeatureTest {
      * Set up.
      */
     @BeforeAll
-    public static void setup() throws IOException {
+    static void setup() throws IOException {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
@@ -95,7 +95,7 @@ public class HealthCheckFeatureTest {
      * Tear down.
      */
     @AfterAll
-    public static void teardown() {
+    static void teardown() {
         PolicyControllerConstants.getFactory().destroy();
         HttpClientFactoryInstance.getClientFactory().destroy();
         HttpServletServerFactoryInstance.getServerFactory().destroy();

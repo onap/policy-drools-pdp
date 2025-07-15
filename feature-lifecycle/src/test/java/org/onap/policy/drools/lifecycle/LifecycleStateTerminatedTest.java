@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,17 +43,17 @@ import org.onap.policy.models.pdp.enums.PdpState;
 /**
  * Lifecycle State Terminated Tests.
  */
-public class LifecycleStateTerminatedTest {
+class LifecycleStateTerminatedTest {
     private LifecycleFsm fsm = new LifecycleFsm();
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }
 

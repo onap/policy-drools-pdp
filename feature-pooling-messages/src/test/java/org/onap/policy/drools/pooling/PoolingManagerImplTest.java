@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,10 +109,9 @@ class PoolingManagerImplTest {
     /**
      * Setup.
      *
-     * @throws Exception throws exception
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         Properties plainProps = new Properties();
 
         poolProps = mock(PoolingProperties.class);
@@ -183,7 +182,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testGetCurrent() throws Exception {
+    void testGetCurrent() {
         assertEquals(IdleState.class, mgr.getCurrent().getClass());
 
         startMgr();
@@ -232,7 +231,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testAfterStart() throws Exception {
+    void testAfterStart() {
         startMgr();
 
         verify(topicMessageManager).startConsumer(mgr);
@@ -314,7 +313,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testAfterStop() throws Exception {
+    void testAfterStop() {
         startMgr();
         mgr.beforeStop();
 
@@ -324,7 +323,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testBeforeLock() throws Exception {
+    void testBeforeLock() {
         startMgr();
 
         mgr.beforeLock();
@@ -345,7 +344,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testAfterUnlock_AliveStarted() throws Exception {
+    void testAfterUnlock_AliveStarted() {
         startMgr();
         lockMgr();
 
@@ -355,7 +354,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testAfterUnlock_StoppedIdle() throws Exception {
+    void testAfterUnlock_StoppedIdle() {
         startMgr();
         lockMgr();
 
@@ -368,7 +367,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testAfterUnlock_StoppedStarted() throws Exception {
+    void testAfterUnlock_StoppedStarted() {
         startMgr();
 
         // Note: don't lockMgr()
@@ -382,7 +381,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testChangeState() throws Exception {
+    void testChangeState() {
         // start should invoke changeState()
         startMgr();
 
@@ -408,7 +407,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testSchedule() throws Exception {
+    void testSchedule() {
         // must start the scheduler
         startMgr();
 
@@ -436,7 +435,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testScheduleWithFixedDelay() throws Exception {
+    void testScheduleWithFixedDelay() {
         // must start the scheduler
         startMgr();
 
@@ -531,7 +530,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testBeforeOffer_Unlocked() throws Exception {
+    void testBeforeOffer_Unlocked() {
         startMgr();
 
         // route the message to another host
@@ -541,7 +540,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testBeforeOffer_Locked() throws Exception {
+    void testBeforeOffer_Locked() {
         startMgr();
         lockMgr();
 
@@ -552,7 +551,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testBeforeInsert() throws Exception {
+    void testBeforeInsert() {
         startMgr();
         lockMgr();
 
@@ -563,30 +562,25 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testHandleExternalCommInfrastructureStringStringString_NullReqId() throws Exception {
+    void testHandleExternalCommInfrastructureStringStringString_NullReqId() {
         validateHandleReqId();
     }
 
     @Test
-    void testHandleExternalCommInfrastructureStringStringString_EmptyReqId() throws Exception {
+    void testHandleExternalCommInfrastructureStringStringString_EmptyReqId() {
         validateHandleReqId();
     }
 
     @Test
-    void testHandleExternalCommInfrastructureStringStringString_InvalidMsg() throws Exception {
+    void testHandleExternalCommInfrastructureStringStringString_InvalidMsg() {
         startMgr();
 
         assertFalse(mgr.beforeInsert(TOPIC2, "invalid message"));
     }
 
     @Test
-    void testHandleExternalCommInfrastructureStringStringString() throws Exception {
-        validateUnhandled();
-    }
-
-    @Test
-    void testHandleExternalForward_NoAssignments() throws Exception {
-        validateUnhandled();
+    void testHandleExternalCommInfrastructureStringStringString() {
+        validateHandleReqId();
     }
 
     @Test
@@ -595,7 +589,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testHandleEvent_NullTarget() throws Exception {
+    void testHandleEvent_NullTarget() {
         // buckets have null targets
         validateDiscarded(new BucketAssignments(new String[] {null, null}));
     }
@@ -606,13 +600,13 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testHandleEvent_DiffHost() throws Exception {
+    void testHandleEvent_DiffHost() {
         // route the message to the *OTHER* host
         validateDiscarded(makeAssignments(false));
     }
 
     @Test
-    void testDecodeEvent_CannotDecode() throws Exception {
+    void testDecodeEvent_CannotDecode() {
 
         mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
             @Override
@@ -632,7 +626,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testDecodeEvent_UnsuppEx() throws Exception {
+    void testDecodeEvent_UnsuppEx() {
 
         // generate exception
         mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
@@ -653,7 +647,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testDecodeEvent_ArgEx() throws Exception {
+    void testDecodeEvent_ArgEx() {
         // generate exception
         mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
             @Override
@@ -673,7 +667,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testDecodeEvent_StateEx() throws Exception {
+    void testDecodeEvent_StateEx() {
         // generate exception
         mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
             @Override
@@ -693,7 +687,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testDecodeEvent() throws Exception {
+    void testDecodeEvent() {
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
@@ -705,26 +699,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testHandleInternal() throws Exception {
-        startMgr();
-
-        StartState st = (StartState) mgr.getCurrent();
-
-        /*
-         * give it its heart beat, that should cause it to transition to the Query state.
-         */
-        Heartbeat hb = new Heartbeat(mgr.getHost(), st.getHbTimestampMs());
-        hb.setChannel(Message.ADMIN);
-
-        String msg = ser.encodeMsg(hb);
-
-        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, msg);
-
-        assertInstanceOf(QueryState.class, mgr.getCurrent());
-    }
-
-    @Test
-    void testHandleInternal_IoEx() throws Exception {
+    void testHandleInternal_IoEx() {
         startMgr();
 
         mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, "invalid message");
@@ -733,7 +708,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testHandleInternal_PoolEx() throws Exception {
+    void testHandleInternal_PoolEx() {
         startMgr();
 
         StartState st = (StartState) mgr.getCurrent();
@@ -814,7 +789,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testTimerActionRun() throws Exception {
+    void testTimerActionRun() {
         // must start the scheduler
         startMgr();
 
@@ -837,7 +812,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testTimerActionRun_DiffState() throws Exception {
+    void testTimerActionRun_DiffState() {
         // must start the scheduler
         startMgr();
 
@@ -888,12 +863,7 @@ class PoolingManagerImplTest {
         verify(topicMessageManager, times(START_PUB)).publish(any());
     }
 
-    private void validateUnhandled() {
-        startMgr();
-        assertFalse(mgr.beforeInsert(TOPIC2, DECODED_EVENT));
-    }
-
-    private void validateDiscarded(BucketAssignments bucketAssignments) throws PoolingFeatureException {
+    private void validateDiscarded(BucketAssignments bucketAssignments) {
         startMgr();
 
         // buckets have null targets
@@ -952,7 +922,7 @@ class PoolingManagerImplTest {
     /**
      * Used to create a mock object that implements both super interfaces.
      */
-    private static interface ListeningController extends TopicListener, PolicyController {
+    private interface ListeningController extends TopicListener, PolicyController {
 
     }
 

@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,19 @@ class TestTransactionFeatureTest {
     private AtomicInteger unregCount;
     private TestTransaction mgr;
     private DroolsController drools;
-    private PolicyController ctlr;
+    private PolicyController controller;
     private TestTransactionFeature feat;
 
     /**
      * Initialize objects for each test.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         regCount = new AtomicInteger(0);
         unregCount = new AtomicInteger(0);
         mgr = mock(TestTransaction.class);
         drools = mock(DroolsController.class);
-        ctlr = mock(PolicyController.class);
+        controller = mock(PolicyController.class);
 
         feat = new TestTransactionFeature() {
             @Override
@@ -62,17 +62,17 @@ class TestTransactionFeatureTest {
             }
         };
 
-        when(ctlr.getDrools()).thenReturn(drools);
+        when(controller.getDrools()).thenReturn(drools);
 
         doAnswer(args -> {
             regCount.incrementAndGet();
             return null;
-        }).when(mgr).register(ctlr);
+        }).when(mgr).register(controller);
 
         doAnswer(args -> {
             unregCount.incrementAndGet();
             return null;
-        }).when(mgr).unregister(ctlr);
+        }).when(mgr).unregister(controller);
     }
 
     @Test
@@ -114,53 +114,53 @@ class TestTransactionFeatureTest {
      * @param method method to invoke
      */
     private void checkCombos(AtomicInteger counter, Function<PolicyController, Boolean> method) {
-        when(ctlr.isAlive()).thenReturn(true);
-        when(ctlr.isLocked()).thenReturn(true);
+        when(controller.isAlive()).thenReturn(true);
+        when(controller.isLocked()).thenReturn(true);
         when(drools.isBrained()).thenReturn(true);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(true);
-        when(ctlr.isLocked()).thenReturn(true);
+        when(controller.isAlive()).thenReturn(true);
+        when(controller.isLocked()).thenReturn(true);
         when(drools.isBrained()).thenReturn(false);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
         // this is the only one that should cause it to register
-        when(ctlr.isAlive()).thenReturn(true);
-        when(ctlr.isLocked()).thenReturn(false);
+        when(controller.isAlive()).thenReturn(true);
+        when(controller.isLocked()).thenReturn(false);
         when(drools.isBrained()).thenReturn(true);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(1, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(true);
-        when(ctlr.isLocked()).thenReturn(false);
+        when(controller.isAlive()).thenReturn(true);
+        when(controller.isLocked()).thenReturn(false);
         when(drools.isBrained()).thenReturn(false);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(false);
-        when(ctlr.isLocked()).thenReturn(true);
+        when(controller.isAlive()).thenReturn(false);
+        when(controller.isLocked()).thenReturn(true);
         when(drools.isBrained()).thenReturn(true);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(false);
-        when(ctlr.isLocked()).thenReturn(true);
+        when(controller.isAlive()).thenReturn(false);
+        when(controller.isLocked()).thenReturn(true);
         when(drools.isBrained()).thenReturn(false);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(false);
-        when(ctlr.isLocked()).thenReturn(false);
+        when(controller.isAlive()).thenReturn(false);
+        when(controller.isLocked()).thenReturn(false);
         when(drools.isBrained()).thenReturn(true);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(false);
-        when(ctlr.isLocked()).thenReturn(false);
+        when(controller.isAlive()).thenReturn(false);
+        when(controller.isLocked()).thenReturn(false);
         when(drools.isBrained()).thenReturn(false);
-        assertFalse(method.apply(ctlr));
+        assertFalse(method.apply(controller));
         assertEquals(0, counter.getAndSet(0));
     }
 
@@ -171,12 +171,12 @@ class TestTransactionFeatureTest {
      * @param method method to invoke
      */
     private void checkSimple(AtomicInteger counter, Function<PolicyController, Boolean> method) {
-        when(ctlr.isAlive()).thenReturn(true);
-        assertFalse(method.apply(ctlr));
+        when(controller.isAlive()).thenReturn(true);
+        assertFalse(method.apply(controller));
         assertEquals(1, counter.getAndSet(0));
 
-        when(ctlr.isAlive()).thenReturn(false);
-        assertFalse(method.apply(ctlr));
+        when(controller.isAlive()).thenReturn(false);
+        assertFalse(method.apply(controller));
         assertEquals(1, counter.getAndSet(0));
     }
 }

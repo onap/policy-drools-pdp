@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2020, 2024 Nordix Foundation
+ * Modifications Copyright (C) 2020, 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,10 +86,9 @@ class PoolingFeatureTest {
     /**
      * Setup.
      *
-     * @throws Exception exception
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         props = initProperties();
         engine = mock(PolicyEngine.class);
         controller1 = mock(PolicyController.class);
@@ -206,7 +205,7 @@ class PoolingFeatureTest {
     }
 
     @Test
-    void testBeforeStart() throws Exception {
+    void testBeforeStart() {
         assertFalse(pool.beforeStart(controller1));
         verify(mgr1).beforeStart();
 
@@ -470,17 +469,17 @@ class PoolingFeatureTest {
     }
 
     private Properties initProperties() {
-        Properties props = new Properties();
+        Properties initProps = new Properties();
 
-        initProperties(props, "A", 0);
-        initProperties(props, "B", 1);
-        initProperties(props, "Exception", 2);
+        initProperties(initProps, "A", 0);
+        initProperties(initProps, "B", 1);
+        initProperties(initProps, "Exception", 2);
 
-        props.setProperty("pooling.controllerDisabled.enabled", "false");
+        initProps.setProperty("pooling.controllerDisabled.enabled", "false");
 
-        props.setProperty("pooling.controllerException.offline.queue.limit", "INVALID NUMBER");
+        initProps.setProperty("pooling.controllerException.offline.queue.limit", "INVALID NUMBER");
 
-        return props;
+        return initProps;
     }
 
     private void initProperties(Properties props, String suffix, int offset) {

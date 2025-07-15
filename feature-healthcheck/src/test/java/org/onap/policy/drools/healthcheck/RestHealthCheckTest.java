@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.onap.policy.drools.system.PolicyControllerFactory;
 /**
  * REST Healthcheck Tests.
  */
-public class RestHealthCheckTest {
+class RestHealthCheckTest {
 
     private static HttpClientFactory clientFactory;
     private static PolicyControllerFactory controllerFactory;
@@ -62,7 +62,7 @@ public class RestHealthCheckTest {
      */
 
     @BeforeAll
-    public static void setUp() throws Exception {
+    static void setUp() throws Exception {
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtils.setLevel("org.eclipse", "ERROR");
         LoggerUtils.setLevel("org.onap.policy.drools.healthcheck", "DEBUG");
@@ -105,7 +105,7 @@ public class RestHealthCheckTest {
      */
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         HttpClientFactoryInstance.getClientFactory().destroy();
         HttpServletServerFactoryInstance.getServerFactory().destroy();
     }

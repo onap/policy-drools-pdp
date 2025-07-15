@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023-2024 Nordix Foundation.
+ * Modifications Copyright (C) 2023--2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,7 +195,7 @@ class MavenDroolsController2Test {
      * Initializes objects, including the drools controller.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
         lenient().when(droolsProviders.getList()).thenReturn(List.of(prov1, prov2));
 

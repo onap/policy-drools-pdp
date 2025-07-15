@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * <p>The following fields must be set before executing this: <ul> <li>SERVER</li>
  * <li>INTERNAL_TOPIC</li> <li>EXTERNAL_TOPIC</li> </ul>
  */
-public class EndToEndFeatureTest {
+class EndToEndFeatureTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EndToEndFeatureTest.class);
 
@@ -149,7 +149,7 @@ public class EndToEndFeatureTest {
      *
      */
     @BeforeAll
-    public static void setUpBeforeClass() {
+    static void setUpBeforeClass() {
         externalSink = TopicEndpointManager.getManager().addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
         externalSink.start();
 
@@ -162,7 +162,7 @@ public class EndToEndFeatureTest {
      *
      */
     @AfterAll
-    public static void tearDownAfterClass() {
+    static void tearDownAfterClass() {
         externalSink.stop();
         internalSink.stop();
     }
@@ -171,7 +171,7 @@ public class EndToEndFeatureTest {
      * Setup.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ctx = null;
     }
 
@@ -179,7 +179,7 @@ public class EndToEndFeatureTest {
      * Tear down.
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (ctx != null) {
             ctx.destroy();
         }
@@ -191,7 +191,7 @@ public class EndToEndFeatureTest {
      */
     @Disabled
     @Test
-    public void test_SingleHost() throws Exception {    // NOSONAR
+    void test_SingleHost() throws Exception { // NOSONAR
         run(70, 1);
     }
 
@@ -201,7 +201,7 @@ public class EndToEndFeatureTest {
      */
     @Disabled
     @Test
-    public void test_TwoHosts() throws Exception {      // NOSONAR
+    void test_TwoHosts() throws Exception {      // NOSONAR
         run(200, 2);
     }
 
@@ -211,7 +211,7 @@ public class EndToEndFeatureTest {
      */
     @Disabled
     @Test
-    public void test_ThreeHosts() throws Exception {    // NOSONAR
+    void test_ThreeHosts() throws Exception {    // NOSONAR
         run(200, 3);
     }
 

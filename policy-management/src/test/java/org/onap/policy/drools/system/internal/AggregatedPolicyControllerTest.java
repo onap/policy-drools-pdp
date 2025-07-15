@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ class AggregatedPolicyControllerTest {
      * Initializes the object to be tested.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         properties = new Properties();
 
         source1 = mock(TopicSource.class);

@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import org.onap.policy.common.utils.security.CryptoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PropertyUtilTest {
+class PropertyUtilTest {
     /*
      * Note: to generate the encrypted values, invoke CryptoUtils passing both the value
      * to be encrypted and the crypto key.
@@ -90,7 +90,7 @@ public class PropertyUtilTest {
      * Test Setup -- Create a directory for temporary files.
      */
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         logger.info("setup: creating a temporary directory");
 
         // create a directory for temporary files
@@ -103,7 +103,7 @@ public class PropertyUtilTest {
      * Test Cleanup -- Remove temporary files.
      */
     @AfterAll
-    public static void teardown() {
+    static void teardown() {
         logger.info("teardown: remove the temporary directory");
 
         // the assumption is that we only have one level of temporary files

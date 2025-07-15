@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021, 2023-2024 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023--2025 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 /**
  * Lifecycle FSM Updates Test.
  */
-public class LifecycleFsmUpdateTest {
+class LifecycleFsmUpdateTest {
 
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON =
@@ -118,7 +118,7 @@ public class LifecycleFsmUpdateTest {
      * Set up.
      */
     @BeforeAll
-    public static void setUp() throws IOException {
+    static void setUp() throws IOException {
         LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
@@ -151,7 +151,7 @@ public class LifecycleFsmUpdateTest {
      * Tear Down.
      */
     @AfterAll
-    public static void tearDown() throws NoSuchFieldException, IllegalAccessException {
+    static void tearDown() throws NoSuchFieldException, IllegalAccessException {
         PolicyControllerConstants.getFactory().destroy();
 
         NoopTopicFactories.getSourceFactory().destroy();
@@ -172,7 +172,7 @@ public class LifecycleFsmUpdateTest {
      * Test initialization.
      */
     @BeforeEach
-    public void init() throws CoderException, IOException, NoSuchFieldException, IllegalAccessException {
+    void init() throws CoderException, IOException, NoSuchFieldException, IllegalAccessException {
         fsm = new LifecycleFsm() {
             @Override
             protected ScheduledExecutorService makeExecutor() {

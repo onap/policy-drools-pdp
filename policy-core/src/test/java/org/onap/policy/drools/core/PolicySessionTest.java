@@ -51,7 +51,7 @@ class PolicySessionTest {
      * Initialize test objects.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         container = mock(PolicyContainer.class);
         kie = mock(KieSession.class);
 
