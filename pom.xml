@@ -42,6 +42,7 @@
     <description>The ONAP Policy Engine drools-based PDP Project</description>
 
     <properties>
+<!--        <maven.compiler.release>17</maven.compiler.release>-->
         <!-- Project path properties -->
         <nexusproxy>https://nexus.onap.org</nexusproxy>
         <sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
@@ -161,13 +162,6 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip/>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
