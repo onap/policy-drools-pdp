@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
         <artifactId>drools-pdp</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>drools-packages</artifactId>
     <packaging>pom</packaging>
