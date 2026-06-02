@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021, 2023--2025 OpenInfra Foundation Europe. All rights reserved.
+ * Modifications Copyright (C) 2021-2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SINK_TOPICS;
 import static org.onap.policy.common.message.bus.properties.MessageBusProperties.PROPERTY_NOOP_SOURCE_TOPICS;
 
-import com.google.common.base.Strings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,6 +38,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -440,7 +440,7 @@ class LifecycleFsmUpdateTest {
 
         String controllerName = (String) testPolicy.getProperties().get("controllerName");
 
-        if (Strings.isNullOrEmpty(controllerName)) {
+        if (StringUtils.isEmpty(controllerName)) {
             // this non-native policy applies to all controllers that are brained
 
             // verify the policy is present as a fact in all brained controllers

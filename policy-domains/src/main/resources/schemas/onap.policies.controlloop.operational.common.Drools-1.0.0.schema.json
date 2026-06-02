@@ -128,7 +128,6 @@
                         "$id": "#/properties/properties/properties/operations/items",
                         "type": "object",
                         "title": "Items",
-                        "uniqueItems": true,
                         "required": [
                             "id",
                             "operation",

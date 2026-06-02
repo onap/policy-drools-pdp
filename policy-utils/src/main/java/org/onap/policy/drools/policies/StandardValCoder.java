@@ -1,7 +1,7 @@
 /*--
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,19 @@
 
 package org.onap.policy.drools.policies;
 
+import com.networknt.schema.InputFormat;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.ToString;
-import net.jimblackler.jsonschemafriend.GenerationException;
-import net.jimblackler.jsonschemafriend.Schema;
-import net.jimblackler.jsonschemafriend.SchemaStore;
-import net.jimblackler.jsonschemafriend.ValidationException;
-import net.jimblackler.jsonschemafriend.Validator;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.exception.CoderRuntimeException;
@@ -48,16 +50,16 @@ public class StandardValCoder extends StandardCoder {
 
     private static final Logger logger = LoggerFactory.getLogger(StandardValCoder.class);
 
-    private final Schema schema;
+    private final JsonSchema schema;
 
     /**
      * StandardCoder with validation.
      */
     public StandardValCoder(@NonNull String jsonSchema) {
         try {
-            SchemaStore store = new SchemaStore();
-            this.schema = store.loadSchemaJson(jsonSchema);
-        } catch (GenerationException e) {
+            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+            this.schema = factory.getSchema(jsonSchema);
+        } catch (Exception e) {
             throw new CoderRuntimeException(e);
         }
     }
@@ -125,18 +127,14 @@ public class StandardValCoder extends StandardCoder {
         validate(json);
     }
 
-    private void validate(Object object) throws CoderException {
-        try {
-            final var validator = new Validator();
-            validator.validate(schema, object);
-        } catch (ValidationException exception) {
-            var error = String.format("JSON validation failed: %s", exception.getMessage());
-            logger.error(error);
+    private void validate(String json) throws CoderException {
+        Set<ValidationMessage> errors = schema.validate(json, InputFormat.JSON);
+        if (!errors.isEmpty()) {
+            var error = "Validation errors: " + errors.stream()
+                .map(ValidationMessage::toString)
+                .collect(Collectors.joining("; "));
+            logger.error("JSON validation failed: {}", error);
             throw new CoderException(error);
         }
-    }
-
-    private void validate(String json) throws CoderException {
-        validate(gson.fromJson(json, Object.class));
     }
 }

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 
 package org.onap.policy.drools.utils;
 
-import com.google.common.base.Splitter;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.configuration2.interpol.Lookup;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,7 @@ public class EnvironmentVariableWithDefaultLookup implements Lookup {
         }
 
         List<String> envWithDefault =
-            Splitter.on(":").trimResults().omitEmptyStrings().splitToList(key);
+            Arrays.stream(key.split(":")).map(String::trim).filter(s -> !s.isEmpty()).toList();
         if (envWithDefault.isEmpty()) {
             return StringUtils.EMPTY;
         }

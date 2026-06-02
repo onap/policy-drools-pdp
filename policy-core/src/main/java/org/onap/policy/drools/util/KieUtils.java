@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021, 2023 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
@@ -203,7 +203,7 @@ public final class KieUtils {
             var url = resources.nextElement();
             try (InputStream is = url.openStream()) {
                 // convert a resource to a byte array
-                byte[] drl = IOUtils.toByteArray(is);
+                byte[] drl = is.readAllBytes();
 
                 // add a new '.drl' entry to the KieFileSystem
                 kfs.write(RESOURCE_PREFIX + index++ + RESOURCE_SUFFIX, drl);

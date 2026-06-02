@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023, 2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import com.google.common.base.Strings;
 import jakarta.ws.rs.core.Response;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
@@ -403,7 +403,7 @@ public class HealthCheckManager implements HealthCheck {
         }
 
         String controllerNames = this.healthCheckProperties.getProperty("liveness.controllers");
-        if (Strings.isNullOrEmpty(controllerNames)) {
+        if (StringUtils.isEmpty(controllerNames)) {
             logger.info("no controllers to live check");
             return;
         }

@@ -86,7 +86,7 @@ class StandardValCoderTest {
             valCoder.decode(missingReqJson, ValOuter.class);
             fail("missing required field should have been flagged by the schema validation");
         } catch (CoderException e) {
-            assertThat(e.getMessage()).contains("Missing property aaCollection");
+            assertThat(e.getMessage()).contains("aaCollection");
         }
 
         try {
@@ -94,8 +94,8 @@ class StandardValCoderTest {
             fail("bad regex should have been flagged by the schema validation");
         } catch (CoderException e) {
             assertThat(e.getMessage())
-                .contains("Validation errors: \"abc123\" at #/aaString failed")
-                .contains("Did not match pattern: ^([a-z]*)$");
+                .contains("aaString")
+                .contains("pattern");
         }
     }
 
