@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01c801f9_f1d452b6",
+        "filename": "policy-domains/src/main/resources/schemas/onap.policies.controlloop.operational.common.Drools-1.0.0.schema.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 6742
+      },
+      "writtenOn": "2026-06-08T17:44:28Z",
+      "side": 0,
+      "message": "This was a mistake in the schema, uncovered during library change. The choices are to remove it as here, or move it to the operations array above.",
+      "range": {
+        "startLine": 131,
+        "startChar": 24,
+        "endLine": 131,
+        "endChar": 44
+      },
+      "revId": "1a4c8a06f91c6af78193fb0cbec67cc3144b5b0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
