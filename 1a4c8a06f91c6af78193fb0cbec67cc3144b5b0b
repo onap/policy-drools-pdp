@@ -22,6 +22,30 @@
       },
       "revId": "1a4c8a06f91c6af78193fb0cbec67cc3144b5b0b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b1de01e_44040757",
+        "filename": "policy-domains/src/main/resources/schemas/onap.policies.controlloop.operational.common.Drools-1.0.0.schema.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2026-06-09T22:17:12Z",
+      "side": 0,
+      "message": "Ack",
+      "parentUuid": "01c801f9_f1d452b6",
+      "range": {
+        "startLine": 131,
+        "startChar": 24,
+        "endLine": 131,
+        "endChar": 44
+      },
+      "revId": "1a4c8a06f91c6af78193fb0cbec67cc3144b5b0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
