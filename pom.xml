@@ -50,7 +50,6 @@
         <staging.path>content/repositories/staging/</staging.path>
 
         <!-- Project common dependency versions -->
-        <xml.apis.version>1.4.01</xml.apis.version>
         <policy.common.version>4.0.1-SNAPSHOT</policy.common.version>
         <policy.models.version>5.0.1-SNAPSHOT</policy.models.version>
     </properties>
@@ -127,19 +126,9 @@
                 <version>2.6.1</version>
             </dependency>
             <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>${xml.apis.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-configuration2</artifactId>
                 <version>2.15.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.10.14</version>
             </dependency>
             <dependency>
                 <groupId>org.mvel</groupId>
