@@ -22,15 +22,13 @@
 package org.onap.policy.drools.policies;
 
 import com.networknt.schema.InputFormat;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.Schema;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SpecificationVersion;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.ToString;
@@ -50,15 +48,15 @@ public class StandardValCoder extends StandardCoder {
 
     private static final Logger logger = LoggerFactory.getLogger(StandardValCoder.class);
 
-    private final JsonSchema schema;
+    private final Schema schema;
 
     /**
      * StandardCoder with validation.
      */
     public StandardValCoder(@NonNull String jsonSchema) {
         try {
-            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
-            this.schema = factory.getSchema(jsonSchema);
+            this.schema = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7)
+                .getSchema(jsonSchema, InputFormat.JSON);
         } catch (Exception e) {
             throw new CoderRuntimeException(e);
         }
@@ -128,10 +126,10 @@ public class StandardValCoder extends StandardCoder {
     }
 
     private void validate(String json) throws CoderException {
-        Set<ValidationMessage> errors = schema.validate(json, InputFormat.JSON);
+        var errors = schema.validate(json, InputFormat.JSON);
         if (!errors.isEmpty()) {
             var error = "Validation errors: " + errors.stream()
-                .map(ValidationMessage::toString)
+                .map(Object::toString)
                 .collect(Collectors.joining("; "));
             logger.error("JSON validation failed: {}", error);
             throw new CoderException(error);
