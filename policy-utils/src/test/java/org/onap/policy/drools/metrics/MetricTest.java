@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Modifications Copyright (C) 2024-2026 OpenInfra Foundation Europe. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,33 +28,18 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.openpojo.reflection.PojoClass;
-import com.openpojo.reflection.impl.PojoClassFactory;
-import com.openpojo.validation.Validator;
-import com.openpojo.validation.ValidatorBuilder;
-import com.openpojo.validation.rule.impl.GetterMustExistRule;
-import com.openpojo.validation.rule.impl.SetterMustExistRule;
-import com.openpojo.validation.test.impl.GetterTester;
-import com.openpojo.validation.test.impl.SetterTester;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
+import org.onap.policy.common.utils.test.PojoTester;
 
 class MetricTest {
 
     @Test
     void testPojo() {
-        PojoClass metric = PojoClassFactory.getPojoClass(Metric.class);
-        Validator val = ValidatorBuilder
-            .create()
-            .with(new SetterMustExistRule())
-            .with(new GetterMustExistRule())
-            .with(new SetterTester())
-            .with(new GetterTester())
-            .build();
-        val.validate(metric);
+        PojoTester.testPojos(Metric.class.getPackageName());
     }
 
     @Test
