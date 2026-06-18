@@ -47,11 +47,6 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.openpojo</groupId>
-            <artifactId>openpojo</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
             <version>${policy.common.version}</version>
