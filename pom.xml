@@ -42,6 +42,12 @@
     <description>The ONAP Policy Engine drools-based PDP Project</description>
 
     <properties>
+        <!-- Project path properties - note these are used in docker/pom.xml -->
+        <nexusproxy>https://nexus.onap.org</nexusproxy>
+        <releases.path>content/repositories/releases/</releases.path>
+        <snapshots.path>content/repositories/snapshots/</snapshots.path>
+
+        <!-- Project common dependency versions -->
         <policy.common.version>4.0.1-SNAPSHOT</policy.common.version>
         <policy.models.version>5.0.1-SNAPSHOT</policy.models.version>
     </properties>
