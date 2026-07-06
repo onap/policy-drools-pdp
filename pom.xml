@@ -29,13 +29,13 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>6.0.2</version>
+        <version>6.0.3-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <groupId>org.onap.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>policy-drools-pdp</name>
 
@@ -48,8 +48,8 @@
         <snapshots.path>content/repositories/snapshots/</snapshots.path>
 
         <!-- Project common dependency versions -->
-        <policy.common.version>4.0.1</policy.common.version>
-        <policy.models.version>5.0.1</policy.models.version>
+        <policy.common.version>4.0.2-SNAPSHOT</policy.common.version>
+        <policy.models.version>5.0.2-SNAPSHOT</policy.models.version>
     </properties>
 
     <modules>
