@@ -22,6 +22,30 @@
       },
       "revId": "2ed12f703495c108def3f1b125535689127e6a47",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f8edf18_cd9f0e13",
+        "filename": "packages/docker/pom.xml.versionsBackup",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2026-07-13T13:42:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7086cb47_c0e1fa72",
+      "range": {
+        "startLine": 25,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 8
+      },
+      "revId": "2ed12f703495c108def3f1b125535689127e6a47",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
