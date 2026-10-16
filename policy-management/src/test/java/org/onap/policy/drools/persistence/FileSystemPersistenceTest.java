@@ -40,10 +40,14 @@ class FileSystemPersistenceTest {
 
     @Test
     void testSetConfiguration_InvalidDir() {
-        persistence.configurationPath = Path.of("/opt/path"); // opt path needs sudo
+        // A directory under a regular file can never be created: that is
+        // ENOTDIR, a filesystem rule rather than a permission, so it holds
+        // for every user on every host. An unwritable system directory
+        // such as /opt only holds where the build account cannot write it.
+        persistence.configurationPath = Path.of("src/test/resources/echo.drl", "path");
         assertThrows(IllegalStateException.class, () -> persistence.setConfigurationDir());
         assertThatThrownBy(() -> persistence.setConfigurationDir())
-            .hasMessageContaining("cannot create /opt/path");
+            .hasMessageContaining("cannot create src/test/resources/echo.drl/path");
     }
 
     @Test
