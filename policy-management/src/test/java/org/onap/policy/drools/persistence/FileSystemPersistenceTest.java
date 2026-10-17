@@ -22,9 +22,14 @@ package org.onap.policy.drools.persistence;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class FileSystemPersistenceTest {
 
@@ -39,11 +44,25 @@ class FileSystemPersistenceTest {
     }
 
     @Test
-    void testSetConfiguration_InvalidDir() {
-        persistence.configurationPath = Path.of("/opt/path"); // opt path needs sudo
+    void testSetConfiguration_InvalidDir(@TempDir Path tempDir) throws IOException {
+        // setConfigurationDir() only reports "cannot create" when the path
+        // does not exist and cannot be made, which needs a readable parent
+        // the process may not write. Build that here rather than borrowing a
+        // system directory: whether the build account can write /opt varies
+        // by host, and on a hosted CI runner it can.
+        var readOnly = Files.createDirectory(tempDir.resolve("read-only"));
+        assertTrue(readOnly.toFile().setWritable(false), "cannot clear the write bit");
+        var target = readOnly.resolve("path");
+
+        // A user that bypasses directory permissions, root for instance,
+        // cannot reach this branch at all; skip rather than fail there.
+        assumeTrue(Files.notExists(target) && !Files.isWritable(readOnly),
+            "directory permissions are not enforced for this user");
+
+        persistence.configurationPath = target;
         assertThrows(IllegalStateException.class, () -> persistence.setConfigurationDir());
         assertThatThrownBy(() -> persistence.setConfigurationDir())
-            .hasMessageContaining("cannot create /opt/path");
+            .hasMessageContaining("cannot create " + target);
     }
 
     @Test
