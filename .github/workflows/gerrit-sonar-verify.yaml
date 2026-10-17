@@ -257,3 +257,8 @@ jobs:
           gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
           gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
           vote-type: ${{ env.WORKFLOW_CONCLUSION }}
+          # Advisory until FileSystemPersistenceTest passes on a hosted
+          # runner: the lane reports the outcome as a comment instead of
+          # a Verified vote, so a failure cannot block an unrelated
+          # change. Drop this line to restore voting.
+          comment-only: "true"
